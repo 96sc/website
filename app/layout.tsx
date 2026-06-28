@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GovBanner } from "@/components/gov-banner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { buildOrganizationJsonLd, stringifyJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,23 +23,9 @@ export const metadata: Metadata = {
   }
 };
 
-const governmentSchema = {
-  "@context": "https://schema.org",
-  "@type": "GovernmentOrganization",
-  name: "Town of Ninety Six",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ninetysixsc.gov",
-  telephone: "+1-864-543-2200",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "120 Main Street W",
-    addressLocality: "Ninety Six",
-    addressRegion: "SC",
-    postalCode: "29666",
-    addressCountry: "US"
-  }
-};
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const organizationJsonLd = buildOrganizationJsonLd();
+
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
@@ -54,7 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SiteFooter />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(governmentSchema) }}
+          dangerouslySetInnerHTML={{ __html: stringifyJsonLd(organizationJsonLd) }}
         />
       </body>
     </html>
