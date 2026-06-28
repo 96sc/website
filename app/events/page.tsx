@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ContactStrip } from "@/components/contact-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import { buildEventsJsonLd, stringifyJsonLd } from "@/lib/structured-data";
 import { formatDate } from "@/lib/utils/date";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function EventsPage() {
   const snapshot = await getCmsSnapshot();
+  const eventsJsonLd = buildEventsJsonLd(snapshot.events);
 
   return (
     <>
@@ -42,6 +44,10 @@ export default async function EventsPage() {
       </section>
 
       <ContactStrip />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(eventsJsonLd) }}
+      />
     </>
   );
 }
