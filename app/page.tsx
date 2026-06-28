@@ -12,11 +12,11 @@ export default async function Home() {
   const featuredServices = snapshot.services.filter((service) => service.featured).slice(0, 4);
   const nextMeeting = snapshot.meetings[0];
   const nextEvents = snapshot.events.slice(0, 3);
-  const quickActionDescriptions: Record<string, string> = {
-    "trash-collection": "Thursday pickup",
-    "pay-ticket": "Case number needed",
-    "business-license-renewal": "Renew online",
-    "utilities-cpw": "Water, sewer, electric"
+  const quickActions: Record<string, { label: string; note: string }> = {
+    "trash-collection": { label: "Trash pickup", note: "Thursday service" },
+    "pay-ticket": { label: "Pay a bill", note: "Tickets and court payments" },
+    "business-license-renewal": { label: "Business licenses", note: "Renew online" },
+    "utilities-cpw": { label: "Utilities", note: "Water, sewer, electric" }
   };
 
   return (
@@ -24,26 +24,31 @@ export default async function Home() {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy">
-            <Image
-              className="hero-mark"
-              src="/brand/96Logo-White.svg"
-              alt=""
-              width={420}
-              height={116}
-              priority
-            />
             <p className="eyebrow">Town of Ninety Six, South Carolina</p>
-            <h1>Ninety Six starts here.</h1>
+            <h1 aria-label="Ninety Six starts here.">
+              <span aria-hidden="true">Ninety Six</span>
+              <span aria-hidden="true">starts here.</span>
+            </h1>
             <p>
               A clearer civic front door for the services people use, the meetings that shape town
               life, and the local story that makes Ninety Six unmistakably itself.
             </p>
-            <div className="hero-actions">
-              <ActionLink href="/services">Find a service</ActionLink>
-              <ActionLink href="/government/meetings" variant="secondary">
-                See meetings
-              </ActionLink>
-            </div>
+            <form className="hero-search" action="/search" role="search">
+              <label htmlFor="hero-site-search">How do I...</label>
+              <div className="hero-search-control">
+                <input
+                  id="hero-site-search"
+                  name="q"
+                  type="search"
+                  placeholder="Search trash pickup, pay a bill, meetings..."
+                  enterKeyHint="search"
+                />
+                <button type="submit">
+                  <Icon name="search" width={20} height={20} />
+                  <span>Search</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </section>
@@ -60,8 +65,8 @@ export default async function Home() {
                 <Icon name={service.icon} width={24} height={24} />
               </span>
               <span>
-                <strong>{service.title}</strong>
-                <small>{quickActionDescriptions[service.slug] ?? service.summary}</small>
+                <strong>{quickActions[service.slug]?.label ?? service.title}</strong>
+                <small>{quickActions[service.slug]?.note ?? service.summary}</small>
               </span>
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
@@ -119,7 +124,7 @@ export default async function Home() {
       <section className="page-section home-meeting">
         <SectionHeading
           eyebrow="Meetings"
-          title="Town business should be easy to follow."
+          title="Town Council, meetings & records."
           description="Council dates, agendas, minutes, recordings, and older public records stay close to the surface."
         />
         <div className="meeting-feature">
@@ -133,7 +138,20 @@ export default async function Home() {
           <div className="meeting-detail">
             <p className="eyebrow">Next meeting</p>
             <h3>{nextMeeting.title}</h3>
-            <p>{nextMeeting.location}</p>
+            <div className="meeting-meta">
+              <div>
+                <span>Date</span>
+                <strong>{formatDate(nextMeeting.date)}</strong>
+              </div>
+              <div>
+                <span>Time</span>
+                <strong>{nextMeeting.time}</strong>
+              </div>
+              <div>
+                <span>Location</span>
+                <strong>{nextMeeting.location}</strong>
+              </div>
+            </div>
             <div className="button-row">
               <ActionLink href="/government/meetings">Meeting records</ActionLink>
               <ActionLink href="/government/council" variant="secondary">
@@ -155,12 +173,11 @@ export default async function Home() {
             />
           </div>
           <div>
-            <p className="eyebrow">A town with history and momentum</p>
-            <h2>Practical services, rooted in a real place.</h2>
+            <p className="eyebrow">Explore Ninety Six</p>
+            <h2>Parks, history, events, and local places.</h2>
             <p>
-              Ninety Six has a name people remember and a history worth showing. The new homepage
-              keeps daily civic needs close while giving the town room to feel local, proud, and
-              alive.
+              Plan a visit around town parks, Revolutionary War history, local events, and the
+              everyday places that make Ninety Six feel welcoming and easy to know.
             </p>
             <div className="button-row">
               <ActionLink href="/visitors">Explore visitor information</ActionLink>
@@ -192,14 +209,22 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="page-section page-section-tight home-portal">
-        <div className="portal-reserve">
-          <p className="eyebrow">Future portal</p>
-          <h2>Built with the next phase in mind.</h2>
-          <p>
-            V1 does not include login-based resident accounts, but the information architecture and
-            custom TypeScript frontend leave space for a full service portal in phase 2.
-          </p>
+      <section className="page-section page-section-tight home-public-notice">
+        <div className="public-notice">
+          <div>
+            <p className="eyebrow">Town notices</p>
+            <h2>Stay connected to service updates.</h2>
+            <p>
+              Watch this space for closings, service changes, meeting updates, and other timely
+              information from Town Hall.
+            </p>
+          </div>
+          <div className="button-row">
+            <ActionLink href="/events">See upcoming events</ActionLink>
+            <ActionLink href="/contact" variant="secondary">
+              Contact Town Hall
+            </ActionLink>
+          </div>
         </div>
       </section>
 
