@@ -13,22 +13,13 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="utility-bar">
-        <a href="tel:8645432200">
-          <Icon name="phone" width={16} height={16} />
-          Town Hall: (864) 543-2200
-        </a>
-        <a href="/services/pay-ticket">Pay ticket</a>
-        <a href="/business">Business license</a>
-      </div>
-
       <div className="main-nav-wrap">
         <Link className="brand-link" href="/" aria-label="Town of Ninety Six home">
           <Image
-            src="/brand/96Logo-Blue.svg"
+            src="/brand/96Logo-Black.svg"
             alt="Town of Ninety Six"
-            width={260}
-            height={72}
+            width={220}
+            height={61}
             priority
           />
         </Link>

@@ -10,8 +10,12 @@ import { formatDate, shortDate } from "@/lib/utils/date";
 export default async function Home() {
   const snapshot = await getCmsSnapshot();
   const featuredServices = snapshot.services.filter((service) => service.featured).slice(0, 4);
-  const nextMeeting = snapshot.meetings[0];
   const nextEvents = snapshot.events.slice(0, 3);
+  const activeAlerts = snapshot.alerts.filter((alert) => alert.active);
+  const activeTownAlert =
+    activeAlerts.find((alert) => alert.severity === "urgent") ?? activeAlerts[0];
+  const activeTownAlertTone =
+    activeTownAlert?.severity === "urgent" ? "urgent" : "general";
   const quickActions: Record<string, { label: string; note: string }> = {
     "trash-collection": { label: "Trash pickup", note: "Thursday service" },
     "pay-ticket": { label: "Pay a bill", note: "Tickets and court payments" },
@@ -24,15 +28,10 @@ export default async function Home() {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy">
-            <p className="eyebrow">Town of Ninety Six, South Carolina</p>
             <h1 aria-label="Ninety Six starts here.">
               <span aria-hidden="true">Ninety Six</span>
               <span aria-hidden="true">starts here.</span>
             </h1>
-            <p>
-              Find town services, public meetings, payments, records, and local updates in one
-              clear place.
-            </p>
             <form className="hero-search" action="/search" role="search">
               <label htmlFor="hero-site-search">How can we help?</label>
               <div className="hero-search-control">
@@ -48,19 +47,34 @@ export default async function Home() {
                   <span>Search</span>
                 </button>
               </div>
-              <div className="hero-quick-links" aria-label="Popular searches">
-                <Link href="/search?q=pay+a+bill">Pay a bill</Link>
-                <span aria-hidden="true">·</span>
-                <Link href="/services/trash-collection">Trash pickup</Link>
-                <span aria-hidden="true">·</span>
-                <Link href="/government/meetings">Town meetings</Link>
-              </div>
             </form>
           </div>
         </div>
       </section>
 
-      <section className="quick-actions-section" aria-label="Common town services">
+      <section
+        className={activeTownAlert ? "quick-actions-section has-alert" : "quick-actions-section"}
+        aria-label="Common town services"
+      >
+        {activeTownAlert ? (
+          <Link
+            className={`common-services-alert common-services-alert-${activeTownAlertTone}`}
+            href={activeTownAlert.href ?? "/events"}
+            aria-label={`${activeTownAlert.title}: ${activeTownAlert.message}`}
+          >
+            <span className="common-services-alert-icon">
+              <Icon name="bell" width={22} height={22} />
+            </span>
+            <span className="common-services-alert-copy">
+              <strong>{activeTownAlert.title}</strong>
+              <span>{activeTownAlert.message}</span>
+            </span>
+            <span className="common-services-alert-link">
+              View alert
+              <Icon name="chevron-right" width={18} height={18} />
+            </span>
+          </Link>
+        ) : null}
         <div className="quick-actions-strip">
           <div className="quick-actions-intro">
             <p className="eyebrow">Common services</p>
@@ -81,12 +95,21 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="home-notices" aria-label="Town notices">
-        <div className="home-notices-inner">
+      <section className="home-news" aria-label="Recent news">
+        <div className="home-news-inner">
+          <div className="home-news-heading">
+            <p className="eyebrow">Recent news</p>
+            <h2>Latest from town hall.</h2>
+            <Link className="news-more-link" href="/events">
+              See more
+              <Icon name="chevron-right" width={18} height={18} />
+            </Link>
+          </div>
           {snapshot.alerts.map((alert) => (
-            <Link className={`home-notice home-notice-${alert.severity}`} href={alert.href ?? "/services"} key={alert.id}>
-              <span>{alert.title}</span>
-              <strong>{alert.message}</strong>
+            <Link className="home-news-card" href={alert.href ?? "/services"} key={alert.id}>
+              <span>{formatDate(alert.updatedAt)}</span>
+              <h3>{alert.title}</h3>
+              <p>{alert.message}</p>
             </Link>
           ))}
         </div>
@@ -95,9 +118,7 @@ export default async function Home() {
       <section className="task-finder home-task-finder">
         <div className="page-section">
           <SectionHeading
-            eyebrow="How do I..."
-            title="Get to the answer quickly."
-            description="The site is organized around real resident questions, not department guesswork."
+            title="Resident Services"
           />
           <div className="task-list">
             <Link href="/services/pay-ticket">
@@ -128,55 +149,14 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="page-section home-meeting">
-        <SectionHeading
-          eyebrow="Meetings"
-          title="Town Council, meetings & records."
-          description="Council dates, agendas, minutes, recordings, and older public records stay close to the surface."
-        />
-        <div className="meeting-feature">
-          <div className="date-block" aria-label={`Next meeting date ${formatDate(nextMeeting.date)}`}>
-            <div>
-              <span>{shortDate(nextMeeting.date).split(" ")[0]}</span>
-              <strong>{shortDate(nextMeeting.date).split(" ")[1]}</strong>
-              <span>{nextMeeting.time}</span>
-            </div>
-          </div>
-          <div className="meeting-detail">
-            <p className="eyebrow">Next meeting</p>
-            <h3>{nextMeeting.title}</h3>
-            <div className="meeting-meta">
-              <div>
-                <span>Date</span>
-                <strong>{formatDate(nextMeeting.date)}</strong>
-              </div>
-              <div>
-                <span>Time</span>
-                <strong>{nextMeeting.time}</strong>
-              </div>
-              <div>
-                <span>Location</span>
-                <strong>{nextMeeting.location}</strong>
-              </div>
-            </div>
-            <div className="button-row">
-              <ActionLink href="/government/meetings">Meeting records</ActionLink>
-              <ActionLink href="/government/council" variant="secondary">
-                Council members
-              </ActionLink>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="story-band">
         <div className="page-section story-grid">
           <div className="story-image">
             <Image
-              src="/media/welcome.png"
-              alt="Welcome to Ninety Six"
-              width={473}
-              height={128}
+              src="/media/9fde7751-ec34-41a8-8fd4-9602ee0b4ab6MdResProxy.jpg"
+              alt="Historical reenactors performing outdoors in Ninety Six"
+              width={1000}
+              height={559}
             />
           </div>
           <div>
@@ -198,21 +178,46 @@ export default async function Home() {
 
       <section className="page-section home-events">
         <SectionHeading
-          eyebrow="News and events"
-          title="What is coming up next."
-          description="Events and notices stay simple, readable, and easy for staff to keep current."
+          eyebrow="Events"
+          title="Upcoming events."
+          description="Find town meetings, festivals, community gatherings, and other dates to know."
         />
         <div className="event-grid">
-          {nextEvents.map((event) => (
-            <article className="event-card" key={event.id}>
-              <p className="eyebrow">{formatDate(event.date)}</p>
-              <h3>{event.title}</h3>
-              <p>{event.summary}</p>
-              <p>
-                <strong>{event.time}</strong> at {event.location}
-              </p>
-            </article>
-          ))}
+          {nextEvents.map((event) => {
+            const eventHref = event.href ?? "/events";
+            const external = eventHref.startsWith("http");
+            const [month, day] = shortDate(event.date).split(" ");
+
+            return (
+              <Link
+                className="event-card"
+                href={eventHref}
+                key={event.id}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noreferrer" : undefined}
+              >
+                <span className="event-date-badge" aria-label={formatDate(event.date)}>
+                  <span>{month}</span>
+                  <strong>{day}</strong>
+                </span>
+                <span className="event-card-body">
+                  <span className="eyebrow">{event.time}</span>
+                  <h3>{event.title}</h3>
+                  <span>{event.summary}</span>
+                </span>
+                <span className="event-card-meta">
+                  <strong>{event.location}</strong>
+                  <span>
+                    View event
+                    <Icon name={external ? "external" : "chevron-right"} width={18} height={18} />
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+        <div className="button-row">
+          <ActionLink href="/events">See all events</ActionLink>
         </div>
       </section>
 

@@ -42,7 +42,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        <link rel="stylesheet" href="https://use.typekit.net/plv6kdj.css" />
+        <link rel="stylesheet" href="https://use.typekit.net/plv6kdj.css?v=2" />
       </head>
       <body>
         <a className="skip-link" href="#main-content">

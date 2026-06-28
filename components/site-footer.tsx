@@ -50,7 +50,13 @@ export function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <span>Town of Ninety Six, South Carolina</span>
-        <span>Official civic website concept for CMS implementation.</span>
+        <Image
+          className="footer-design-logo"
+          src="/brand/96Design-Logo.svg"
+          alt="96 Design"
+          width={128}
+          height={33}
+        />
       </div>
     </footer>
   );

@@ -237,6 +237,7 @@ export const seedContent: CmsSnapshot = {
       title: "Trash Pickup",
       message: "Thursday is the regular trash pickup day for town service.",
       severity: "notice",
+      active: false,
       href: "/services/trash-collection",
       updatedAt: "2026-06-28"
     },
@@ -245,6 +246,7 @@ export const seedContent: CmsSnapshot = {
       title: "Business License Renewals",
       message: "2026-2027 renewals are marked past due on the current official site.",
       severity: "warning",
+      active: true,
       href: "/business",
       updatedAt: "2026-06-28"
     }

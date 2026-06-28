@@ -6,7 +6,7 @@ export function GovBanner() {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="usa-banner" aria-label="Official website of the United States government">
+    <section className="usa-banner" aria-label="Official website of the Town of Ninety Six, South Carolina">
       <div className="usa-accordion">
         <header className="usa-banner__header">
           <div className="usa-banner__inner">
@@ -20,7 +20,7 @@ export function GovBanner() {
             </div>
             <div className="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
               <p className="usa-banner__header-text">
-                An official website of the United States government
+                An official website of the Town of Ninety Six, South Carolina
               </p>
               <p className="usa-banner__header-action">Here’s how you know</p>
             </div>
