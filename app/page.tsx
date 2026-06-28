@@ -30,23 +30,30 @@ export default async function Home() {
               <span aria-hidden="true">starts here.</span>
             </h1>
             <p>
-              A clearer civic front door for the services people use, the meetings that shape town
-              life, and the local story that makes Ninety Six unmistakably itself.
+              Find town services, public meetings, payments, records, and local updates in one
+              clear place.
             </p>
             <form className="hero-search" action="/search" role="search">
-              <label htmlFor="hero-site-search">How do I...</label>
+              <label htmlFor="hero-site-search">How can we help?</label>
               <div className="hero-search-control">
                 <input
                   id="hero-site-search"
                   name="q"
                   type="search"
-                  placeholder="Search trash pickup, pay a bill, meetings..."
+                  placeholder="Search services, payments, meetings, and more…"
                   enterKeyHint="search"
                 />
                 <button type="submit">
                   <Icon name="search" width={20} height={20} />
                   <span>Search</span>
                 </button>
+              </div>
+              <div className="hero-quick-links" aria-label="Popular searches">
+                <Link href="/search?q=pay+a+bill">Pay a bill</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/services/trash-collection">Trash pickup</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/government/meetings">Town meetings</Link>
               </div>
             </form>
           </div>

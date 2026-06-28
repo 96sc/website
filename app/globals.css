@@ -77,6 +77,116 @@ input {
   transform: translateY(0);
 }
 
+.usa-banner {
+  color: #1b1b1b;
+  background: #f0f0f0;
+  border-bottom: 1px solid #dfe1e2;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.usa-banner__header {
+  min-height: 40px;
+}
+
+.usa-banner__inner,
+.usa-banner__content {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding-inline: 1.25rem;
+}
+
+.usa-banner__inner {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 40px;
+}
+
+.grid-col-auto {
+  flex: 0 0 auto;
+}
+
+.grid-col-fill {
+  flex: 1 1 auto;
+}
+
+.usa-banner__header-flag {
+  width: 16px;
+  height: 11px;
+  object-fit: cover;
+}
+
+.usa-banner p {
+  margin: 0;
+}
+
+.usa-banner__header-text,
+.usa-banner__header-action,
+.usa-banner__button {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+}
+
+.usa-banner__header-action {
+  display: none;
+  color: #005ea8;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.usa-banner__button {
+  border: 0;
+  padding: 0;
+  color: #005ea8;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.usa-banner__button:hover {
+  color: #1a4480;
+}
+
+.usa-banner__content {
+  padding-block: 1rem 1.15rem;
+}
+
+.usa-banner__content[hidden] {
+  display: none;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-gap-lg {
+  gap: 1.5rem;
+}
+
+.usa-banner__guidance {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.usa-banner__icon {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+}
+
+.usa-banner__lock-image {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.9em;
+  margin-inline: 0.15em;
+  vertical-align: -0.08em;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -165,11 +275,10 @@ input {
 
 .hero {
   position: relative;
-  min-height: min(760px, calc(100vh - 176px));
+  min-height: min(720px, calc(100vh - 176px));
   color: white;
   background:
-    linear-gradient(90deg, rgba(8, 17, 38, 0.94) 0%, rgba(8, 17, 38, 0.78) 42%, rgba(8, 17, 38, 0.24) 100%),
-    linear-gradient(0deg, rgba(8, 17, 38, 0.38), rgba(8, 17, 38, 0)),
+    linear-gradient(90deg, rgba(20, 20, 18, 0.78) 0%, rgba(20, 20, 18, 0.62) 34%, rgba(20, 20, 18, 0.24) 62%, rgba(20, 20, 18, 0.04) 100%),
     url("/media/ninety-six-downtown.jpg") center 48% / cover;
 }
 
@@ -177,13 +286,13 @@ input {
   display: flex;
   align-items: center;
   max-width: var(--content);
-  min-height: min(760px, calc(100vh - 176px));
+  min-height: min(720px, calc(100vh - 176px));
   margin: 0 auto;
-  padding: 5.75rem 1.25rem 4.75rem;
+  padding: 5.4rem 1.25rem 5rem;
 }
 
 .hero-copy {
-  max-width: 960px;
+  max-width: 860px;
 }
 
 .eyebrow {
@@ -195,7 +304,9 @@ input {
 }
 
 .hero .eyebrow {
-  color: #b9d7ff;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  text-transform: none;
 }
 
 h1,
@@ -218,11 +329,12 @@ h3,
 
 h1 {
   max-width: 980px;
-  font-size: clamp(4.2rem, 10vw, 8.8rem);
+  font-size: clamp(4rem, 8.8vw, 7.6rem);
 }
 
 .hero h1 {
-  line-height: 0.88;
+  max-width: 860px;
+  line-height: 0.94;
 }
 
 .hero h1 span {
@@ -238,10 +350,10 @@ h3 {
 }
 
 .hero-copy > p:not(.eyebrow) {
-  max-width: 720px;
-  margin: 1.45rem 0 0;
-  color: #eef4ff;
-  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  max-width: 620px;
+  margin: 1.65rem 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.08rem, 1.8vw, 1.34rem);
 }
 
 .button-row,
@@ -255,15 +367,15 @@ h3 {
 .hero-search {
   display: grid;
   gap: 0.75rem;
-  max-width: 780px;
-  margin-top: 2.1rem;
+  max-width: 720px;
+  margin-top: 2.45rem;
 }
 
 .hero-search label,
 .search-page-form label {
   color: white;
   font-family: var(--font-ui);
-  font-size: 1.08rem;
+  font-size: 1.18rem;
   font-weight: 900;
 }
 
@@ -273,7 +385,7 @@ h3 {
   overflow: hidden;
   border-radius: var(--radius);
   background: white;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
 }
 
 .hero-search-control:focus-within,
@@ -321,6 +433,26 @@ h3 {
 .hero-search button:hover,
 .search-page-control button:hover {
   background: #0f2dff;
+}
+
+.hero-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.hero-quick-links a {
+  color: white;
+}
+
+.hero-quick-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .hero-panel {
