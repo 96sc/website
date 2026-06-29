@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { primaryNavigation } from "@/lib/navigation";
+import { footerNavigation, legalNavigation } from "@/lib/navigation";
 import { Icon } from "./icon";
 
 export function SiteFooter() {
@@ -25,7 +25,7 @@ export function SiteFooter() {
         <nav aria-label="Footer navigation">
           <h2>Explore</h2>
           <div className="footer-links">
-            {primaryNavigation.map((item) => (
+            {footerNavigation.map((item) => (
               <Link key={item.href} href={item.href}>
                 {item.label}
               </Link>
@@ -50,6 +50,13 @@ export function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <span>Town of Ninety Six, South Carolina</span>
+        <nav className="footer-legal" aria-label="Legal links">
+          {legalNavigation.map((item) => (
+            <Link key={item.href} href={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
         <Image
           className="footer-design-logo"
           src="/brand/96Design-Logo.svg"

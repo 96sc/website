@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ninetysixsc.gov";
   const snapshot = await getCmsSnapshot();
 
-  const staticRoutes = ["", "/search", "/services", "/government", "/government/council", "/government/meetings", "/government/departments", "/residents", "/business", "/visitors", "/events", "/news", "/contact"];
+  const staticRoutes = ["", "/search", "/services", "/government", "/government/council", "/government/meetings", "/government/departments", "/community", "/residents", "/visitors", "/events", "/news", "/contact", "/privacy", "/terms"];
 
   return [
     ...staticRoutes.map((route) => ({
@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...snapshot.events.map((event) => ({
       url: `${baseUrl}${eventPath(event)}`,
-      lastModified: new Date(event.date)
+      lastModified: new Date(event.endDate ?? event.date)
     })),
     ...snapshot.news.map((post) => ({
       url: `${baseUrl}${newsPath(post)}`,

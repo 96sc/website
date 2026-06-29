@@ -24,17 +24,6 @@ export function SiteHeader() {
           />
         </Link>
 
-        <button
-          className="icon-button menu-button"
-          type="button"
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={menuOpen}
-          aria-controls="primary-navigation"
-          onClick={() => setMenuOpen((current) => !current)}
-        >
-          <Icon name={menuOpen ? "x" : "menu"} width={24} height={24} />
-        </button>
-
         <nav
           id="primary-navigation"
           className={menuOpen ? "primary-nav is-open" : "primary-nav"}
@@ -51,6 +40,29 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
+
+        <div className="header-actions">
+          <Link
+            className="header-search-link"
+            href="/search"
+            aria-current={pathname === "/search" ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            <Icon name="search" width={18} height={18} />
+            <span>Search</span>
+          </Link>
+
+          <button
+            className="icon-button menu-button"
+            type="button"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menuOpen}
+            aria-controls="primary-navigation"
+            onClick={() => setMenuOpen((current) => !current)}
+          >
+            <Icon name={menuOpen ? "x" : "menu"} width={24} height={24} />
+          </button>
+        </div>
       </div>
     </header>
   );

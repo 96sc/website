@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot, getEventBySlug } from "@/lib/cms/content";
 import { eventSlug, isExternalHref } from "@/lib/cms/links";
 import { buildEventsJsonLd, stringifyJsonLd } from "@/lib/structured-data";
-import { formatDate } from "@/lib/utils/date";
+import { formatDateRange, formatTimeRange } from "@/lib/utils/date";
 import { AppleMapsEmbed } from "./apple-maps-embed";
 
 type EventPageProps = {
@@ -32,7 +32,17 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 
   return {
     title: event.title,
-    description: event.summary
+    description: event.summary,
+    openGraph: event.image
+      ? {
+          images: [
+            {
+              url: event.image.src,
+              alt: event.image.alt ?? event.title
+            }
+          ]
+        }
+      : undefined
   };
 }
 
@@ -72,6 +82,13 @@ export default async function EventPage({ params }: EventPageProps) {
       <section className="page-section">
         <div className="content-with-sidebar">
           <article className="article-body">
+            {event.image ? (
+              <img
+                className="event-detail-image"
+                src={event.image.src}
+                alt={event.image.alt ?? ""}
+              />
+            ) : null}
             <SectionHeading title="Event details" />
             {body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
@@ -80,8 +97,8 @@ export default async function EventPage({ params }: EventPageProps) {
           <aside className="detail-sidebar" aria-label="Event information">
             <article className="info-card">
               <h2>When</h2>
-              <p>{formatDate(event.date)}</p>
-              <p>{event.time}</p>
+              <p>{formatDateRange(event.date, event.endDate)}</p>
+              <p>{formatTimeRange(event.time, event.endTime)}</p>
             </article>
             <article className="info-card">
               <h2>Where</h2>
