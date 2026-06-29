@@ -53,11 +53,11 @@ export function buildOrganizationJsonLd() {
   };
 }
 
-function parseEventStartDate(event: EventRecord) {
-  const timeMatch = event.time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+function parseEventDateTime(date: string, time?: string) {
+  const timeMatch = time?.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
 
   if (!timeMatch) {
-    return event.date;
+    return date;
   }
 
   const [, rawHour, minute, meridiem] = timeMatch;
@@ -69,7 +69,7 @@ function parseEventStartDate(event: EventRecord) {
         ? 0
         : hourNumber;
 
-  return `${event.date}T${hour.toString().padStart(2, "0")}:${minute}:00`;
+  return `${date}T${hour.toString().padStart(2, "0")}:${minute}:00`;
 }
 
 function buildEventLocation(location: string) {
@@ -107,6 +107,9 @@ export function buildEventsJsonLd(events: EventRecord[]) {
 
   return events.map((event) => {
     const eventUrl = toAbsoluteUrl(eventPath(event));
+    const startDate = parseEventDateTime(event.startDate ?? event.date, event.startTime ?? event.time);
+    const endDateSource = event.endDate ?? (event.endTime ? event.startDate ?? event.date : undefined);
+    const endDate = endDateSource ? parseEventDateTime(endDateSource, event.endTime) : undefined;
 
     return {
       "@context": "https://schema.org",
@@ -114,7 +117,9 @@ export function buildEventsJsonLd(events: EventRecord[]) {
       "@id": `${eventUrl}#${event.id}`,
       name: event.title,
       description: event.summary,
-      startDate: parseEventStartDate(event),
+      ...(event.image ? { image: [toAbsoluteUrl(event.image.src)] } : {}),
+      startDate,
+      ...(endDate ? { endDate } : {}),
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       location: buildEventLocation(event.location),

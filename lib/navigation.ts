@@ -1,12 +1,19 @@
 export const primaryNavigation = [
   { label: "Services", href: "/services" },
   { label: "Government", href: "/government" },
-  { label: "Residents", href: "/residents" },
-  { label: "Business", href: "/business" },
-  { label: "Visitors", href: "/visitors" },
-  { label: "Events", href: "/events" },
-  { label: "News", href: "/news" },
+  { label: "Community", href: "/community" },
+  { label: "Visit", href: "/visitors" },
+  { label: "News", href: "/news" }
+];
+
+export const footerNavigation = [
+  ...primaryNavigation,
   { label: "Contact", href: "/contact" }
+];
+
+export const legalNavigation = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Use", href: "/terms" }
 ];
 
 export const governmentNavigation = [

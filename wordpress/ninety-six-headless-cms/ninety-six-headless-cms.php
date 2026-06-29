@@ -25,6 +25,7 @@ final class Ninety_Six_Headless_CMS {
 		add_action('init', [__CLASS__, 'register_meta_fields']);
 		add_action('add_meta_boxes', [__CLASS__, 'add_meta_boxes']);
 		add_action('save_post', [__CLASS__, 'save_meta'], 10, 2);
+		add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
 		add_action('rest_api_init', [__CLASS__, 'register_rest_routes']);
 		add_filter('enter_title_here', [__CLASS__, 'title_placeholder'], 10, 2);
 	}
@@ -186,6 +187,23 @@ final class Ninety_Six_Headless_CMS {
 		}
 	}
 
+	public static function enqueue_admin_assets(): void {
+		$screen = get_current_screen();
+
+		if (!$screen || !isset(self::field_config()[$screen->post_type])) {
+			return;
+		}
+
+		wp_enqueue_media();
+		wp_enqueue_script(
+			'n96-headless-cms-admin',
+			plugin_dir_url(__FILE__) . 'admin.js',
+			[],
+			'0.1.0',
+			true
+		);
+	}
+
 	public static function register_rest_routes(): void {
 		register_rest_route(
 			self::REST_NAMESPACE,
@@ -248,9 +266,7 @@ final class Ninety_Six_Headless_CMS {
 				'plural' => 'Events',
 				'icon' => 'dashicons-calendar-alt',
 				'position' => 22,
-				'template' => [
-					['core/paragraph', ['placeholder' => 'Add public event details, parking notes, schedule details, or accessibility notes.']],
-				],
+				'supports' => ['title', 'revisions', 'page-attributes'],
 			],
 			self::POST_MEETING => [
 				'singular' => 'Meeting',
@@ -335,7 +351,8 @@ final class Ninety_Six_Headless_CMS {
 				'title_placeholder' => 'Event name, such as Regular Town Council Meeting',
 				'description' => 'Events power the Events page, event detail pages, homepage calendar, search, sitemap, and structured data.',
 				'checklist' => [
-					'Add the event date, time, location, summary, and body details.',
+					'Add the event date, time, location, summary, and description.',
+					'Add an image URL when the public event page should show a photo or flyer.',
 					'Add map address, coordinates, and Apple Place ID when an Apple Maps embed should display.',
 					'Publish the event.',
 				],
@@ -564,16 +581,41 @@ final class Ninety_Six_Headless_CMS {
 				$summary,
 				[
 					'n96_event_date' => [
-						'label' => 'Event date',
+						'label' => 'Start date',
 						'type' => 'date',
 					],
 					'n96_event_time' => [
-						'label' => 'Event time',
+						'label' => 'Start time',
 						'type' => 'text',
+					],
+					'n96_event_end_date' => [
+						'label' => 'End date',
+						'type' => 'date',
+						'help' => 'Optional. Leave blank for one-day events.',
+					],
+					'n96_event_end_time' => [
+						'label' => 'End time',
+						'type' => 'text',
+						'help' => 'Optional. Use a clear public time such as 8:00 PM.',
 					],
 					'n96_event_location' => [
 						'label' => 'Event location',
 						'type' => 'text',
+					],
+					'n96_event_description' => [
+						'label' => 'Event description',
+						'type' => 'textarea',
+						'help' => 'Longer public event details. One paragraph per line. Falls back to Summary when empty.',
+					],
+					'n96_event_image' => [
+						'label' => 'Event image',
+						'type' => 'image',
+						'help' => 'Optional. Upload or select a public event photo, poster, or flyer image.',
+					],
+					'n96_event_image_alt' => [
+						'label' => 'Event image alt text',
+						'type' => 'text',
+						'help' => 'Briefly describe the image for screen readers.',
 					],
 					'n96_event_address' => [
 						'label' => 'Map address',
@@ -744,6 +786,19 @@ final class Ninety_Six_Headless_CMS {
 			return;
 		}
 
+		if ($type === 'image') {
+			$has_image = $value !== '';
+			echo '<div class="n96-image-field">';
+			echo '<input class="regular-text n96-image-url" type="url" id="' . $field_id . '" name="' . $field_name . '" value="' . esc_attr($value) . '" />';
+			echo '<button type="button" class="button n96-image-select">Choose or upload image</button> ';
+			echo '<button type="button" class="button-link n96-image-clear" ' . ($has_image ? '' : 'hidden') . '>Remove image</button>';
+			echo '<div style="margin-top: 0.75rem;">';
+			echo '<img class="n96-image-preview" src="' . esc_url($value) . '" alt="" style="max-width: 280px; height: auto; border: 1px solid #dcdcde; border-radius: 4px;" ' . ($has_image ? '' : 'hidden') . ' />';
+			echo '</div>';
+			echo '</div>';
+			return;
+		}
+
 		if ($type === 'checkbox') {
 			echo '<label><input type="checkbox" id="' . $field_id . '" name="' . $field_name . '" value="1" ' . checked($value, '1', false) . ' /> Yes</label>';
 			return;
@@ -774,7 +829,7 @@ final class Ninety_Six_Headless_CMS {
 			return $value === '' ? '' : '1';
 		}
 
-		if ($type === 'url') {
+		if ($type === 'url' || $type === 'image') {
 			return esc_url_raw($value);
 		}
 
@@ -1020,23 +1075,42 @@ final class Ninety_Six_Headless_CMS {
 			array_map(
 				static function (WP_Post $post): array {
 					$href = self::meta($post, 'n96_event_href');
+					$image_src = self::meta($post, 'n96_event_image');
+					$description = self::lines($post, 'n96_event_description');
+					$start_date = self::date_meta($post, 'n96_event_date');
+					$start_time = self::meta($post, 'n96_event_time', 'To be announced');
+					$end_date = self::optional_date_meta($post, 'n96_event_end_date');
+					$end_time = self::meta($post, 'n96_event_end_time');
 					$record = [
 						'id' => self::record_id($post, 'event'),
 						'slug' => self::slug($post),
 						'title' => self::title($post),
-						'date' => self::date_meta($post, 'n96_event_date'),
-						'time' => self::meta($post, 'n96_event_time', 'To be announced'),
+						'date' => $start_date,
+						'time' => $start_time,
+						'startDate' => $start_date,
+						'startTime' => $start_time,
+						'endDate' => $end_date,
+						'endTime' => $end_time,
 						'location' => self::meta($post, 'n96_event_location'),
 						'address' => self::meta($post, 'n96_event_address'),
 						'latitude' => self::meta($post, 'n96_event_latitude'),
 						'longitude' => self::meta($post, 'n96_event_longitude'),
 						'applePlaceId' => self::meta($post, 'n96_event_apple_place_id'),
 						'summary' => self::summary($post),
-						'body' => self::body($post),
+						'body' => !empty($description) ? $description : self::body($post),
 					];
 
 					if ($href !== '') {
 						$record['href'] = $href;
+					}
+
+					if ($image_src !== '') {
+						$record['image'] = self::without_empty(
+							[
+								'src' => $image_src,
+								'alt' => self::meta($post, 'n96_event_image_alt', self::title($post)),
+							]
+						);
 					}
 
 					return self::without_empty($record);
@@ -1350,6 +1424,10 @@ final class Ninety_Six_Headless_CMS {
 	private static function date_meta(WP_Post $post, string $key): string {
 		$value = self::meta($post, $key);
 		return $value !== '' ? $value : get_post_time('Y-m-d', false, $post);
+	}
+
+	private static function optional_date_meta(WP_Post $post, string $key): string {
+		return self::meta($post, $key);
 	}
 
 	private static function modified_date(WP_Post $post): string {

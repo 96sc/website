@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
 import { eventPath } from "@/lib/cms/links";
 import { buildEventsJsonLd, stringifyJsonLd } from "@/lib/structured-data";
-import { formatDate } from "@/lib/utils/date";
+import { formatDateRange, formatTimeRange } from "@/lib/utils/date";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -34,12 +34,22 @@ export default async function EventsPage() {
         <div className="event-grid">
           {snapshot.events.map((event) => (
             <Link className="event-card" href={eventPath(event)} key={event.id}>
-              <p className="eyebrow">{formatDate(event.date)}</p>
-              <h3>{event.title}</h3>
-              <p>{event.summary}</p>
-              <p>
-                <strong>{event.time}</strong> at {event.location}
-              </p>
+              {event.image ? (
+                <img
+                  className="event-card-image"
+                  src={event.image.src}
+                  alt={event.image.alt ?? ""}
+                  loading="lazy"
+                />
+              ) : null}
+              <div className="event-card-content">
+                <p className="eyebrow">{formatDateRange(event.date, event.endDate)}</p>
+                <h3>{event.title}</h3>
+                <p>{event.summary}</p>
+                <p>
+                  <strong>{formatTimeRange(event.time, event.endTime)}</strong> at {event.location}
+                </p>
+              </div>
             </Link>
           ))}
         </div>

@@ -7,7 +7,7 @@ import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
 import { eventPath, newsPath } from "@/lib/cms/links";
-import { formatDate, shortDate } from "@/lib/utils/date";
+import { formatDate, formatTimeRange, shortDate } from "@/lib/utils/date";
 
 export default async function Home() {
   const snapshot = await getCmsSnapshot();
@@ -151,7 +151,7 @@ export default async function Home() {
               Pay a traffic ticket
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
-            <Link href="/business">
+            <Link href="/services/business-license-renewal">
               Renew a business license
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
@@ -163,8 +163,8 @@ export default async function Home() {
               Find agendas and minutes
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
-            <Link href="/contact">
-              Contact a department
+            <Link href="/community">
+              Find community resources
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
             <Link href="/government/council">
@@ -230,7 +230,7 @@ export default async function Home() {
                       <strong>{day}</strong>
                     </span>
                     <span className="event-card-body">
-                      <span className="eyebrow">{event.time}</span>
+                      <span className="eyebrow">{formatTimeRange(event.time, event.endTime)}</span>
                       <h3>{event.title}</h3>
                       <span>{event.summary}</span>
                     </span>
@@ -266,8 +266,8 @@ export default async function Home() {
           </div>
           <div className="button-row">
             <ActionLink href="/events">See upcoming events</ActionLink>
-            <ActionLink href="/contact" variant="secondary">
-              Contact Town Hall
+            <ActionLink href="/community" variant="secondary">
+              Community resources
             </ActionLink>
           </div>
         </div>

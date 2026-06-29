@@ -81,6 +81,10 @@ export type EventRecord = {
   title: string;
   date: string;
   time: string;
+  startDate?: string;
+  startTime?: string;
+  endDate?: string;
+  endTime?: string;
   location: string;
   address?: string;
   latitude?: string;
@@ -88,6 +92,10 @@ export type EventRecord = {
   applePlaceId?: string;
   summary: string;
   body?: string[];
+  image?: {
+    src: string;
+    alt?: string;
+  };
   href?: string;
 };
 

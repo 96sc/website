@@ -5,7 +5,7 @@ import { Icon } from "@/components/icon";
 import { getCmsSnapshot } from "@/lib/cms/content";
 import { eventPath, newsPath } from "@/lib/cms/links";
 import type { CmsSnapshot } from "@/lib/cms/types";
-import { formatDate } from "@/lib/utils/date";
+import { formatDate, formatDateRange, formatTimeRange } from "@/lib/utils/date";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -46,6 +46,22 @@ const coreResults: SearchResult[] = [
     keywords: ["council", "agenda", "minutes", "records", "ordinance", "department"]
   },
   {
+    id: "core-community",
+    type: "Page",
+    title: "Community",
+    summary: "Events, parks, recreation, family resources, volunteer opportunities, and local history.",
+    href: "/community",
+    keywords: ["community", "parks", "recreation", "family", "volunteer", "history", "events"]
+  },
+  {
+    id: "core-visit",
+    type: "Page",
+    title: "Visit",
+    summary: "Visitor information, outdoor activities, local history, attractions, and events.",
+    href: "/visitors",
+    keywords: ["visit", "visitors", "history", "parks", "attractions", "outdoors", "recreation"]
+  },
+  {
     id: "core-contact",
     type: "Page",
     title: "Contact Town Hall",
@@ -60,6 +76,22 @@ const coreResults: SearchResult[] = [
     summary: "Upcoming town events, public meetings, closures, and community happenings.",
     href: "/events",
     keywords: ["event", "calendar", "festival", "meeting", "notice"]
+  },
+  {
+    id: "core-privacy",
+    type: "Page",
+    title: "Privacy Policy",
+    summary: "How the Town website handles information, cookies, records, and third-party services.",
+    href: "/privacy",
+    keywords: ["privacy", "policy", "cookies", "analytics", "records", "personal information"]
+  },
+  {
+    id: "core-terms",
+    type: "Page",
+    title: "Terms of Use",
+    summary: "Website use rules, public information notes, external links, and legal disclaimers.",
+    href: "/terms",
+    keywords: ["terms", "terms of use", "tos", "website rules", "privacy", "disclaimer"]
   }
 ];
 
@@ -139,7 +171,7 @@ function createSearchIndex(snapshot: CmsSnapshot): SearchResult[] {
       id: event.id,
       type: "Event",
       title: event.title,
-      summary: `${formatDate(event.date)} at ${event.time}. ${event.summary}`,
+      summary: `${formatDateRange(event.date, event.endDate)} at ${formatTimeRange(event.time, event.endTime)}. ${event.summary}`,
       href: eventPath(event),
       keywords: [
         event.title,
@@ -147,7 +179,9 @@ function createSearchIndex(snapshot: CmsSnapshot): SearchResult[] {
         event.location,
         event.address ?? "",
         event.time,
+        event.endTime ?? "",
         formatDate(event.date),
+        event.endDate ? formatDate(event.endDate) : "",
         ...(event.body ?? [])
       ]
     })),
@@ -268,11 +302,11 @@ function searchSite(index: SearchResult[], query: string) {
 
 function SearchResultLink({ result }: { result: SearchResult }) {
   const content = (
-    <>
+    <div className="search-result-content">
       <span className="result-type">{result.type}</span>
       <h2>{result.title}</h2>
       <p>{result.summary}</p>
-    </>
+    </div>
   );
 
   if (result.external) {

@@ -24,18 +24,6 @@ export const seedContent: CmsSnapshot = {
       updatedAt: "2026-06-28"
     },
     {
-      id: "page-business",
-      slug: "business",
-      title: "Business",
-      summary: "Resources for opening, renewing, and growing a business in Ninety Six.",
-      body: [
-        "Business owners can find licensing details, renewal links, local listings, and contacts for Town Hall.",
-        "Online renewal remains connected to the official GovPossible portal for v1."
-      ],
-      status: "published",
-      updatedAt: "2026-06-28"
-    },
-    {
       id: "page-visitors",
       slug: "visitors",
       title: "Visitors",
@@ -247,7 +235,7 @@ export const seedContent: CmsSnapshot = {
       message: "2026-2027 renewals are marked past due on the current official site.",
       severity: "warning",
       active: true,
-      href: "/business",
+      href: "/services/business-license-renewal",
       updatedAt: "2026-06-28"
     }
   ],
