@@ -59,6 +59,7 @@ export type AlertRecord = {
   message: string;
   severity: "notice" | "warning" | "urgent";
   active?: boolean;
+  iconSvg?: string;
   href?: string;
   updatedAt: string;
 };
