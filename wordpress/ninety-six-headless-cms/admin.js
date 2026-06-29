@@ -39,7 +39,7 @@
       }
 
       const frame = window.wp.media({
-        title: "Choose event image",
+        title: "Choose image",
         button: {
           text: "Use this image"
         },

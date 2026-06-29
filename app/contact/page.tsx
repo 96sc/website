@@ -3,33 +3,43 @@ import { ActionLink } from "@/components/action-link";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import type { StaffRecord } from "@/lib/cms/types";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Town Hall address, phone directory, visitor center, departments, and contact information."
 };
 
-const contactRows = [
-  ["Town Hall Clerk", "864-543-2200 option 1"],
-  ["Municipal Court Clerk", "864-543-2200 option 2"],
-  ["Town Mayor", "864-543-2200 option 3"],
-  ["Police Department", "864-543-2200 option 4"],
-  ["Fire Department", "864-543-2200 option 5"],
-  ["Tourism", "864-543-2200 option 6"],
-  ["Visitor Center", "864-543-2200 option 7"],
-  ["Maintenance Department", "864-543-2200 option 8"],
-  ["Code Enforcement", "864-543-2200 option 9"]
+const contactRows: StaffRecord[] = [
+  { id: "contact-town-clerk", name: "Town Hall Clerk", role: "Town Hall", phone: "864-543-2200 option 1" },
+  {
+    id: "contact-municipal-court",
+    name: "Municipal Court Clerk",
+    role: "Municipal Court",
+    phone: "864-543-2200 option 2"
+  },
+  { id: "contact-mayor", name: "Town Mayor", role: "Mayor", phone: "864-543-2200 option 3" },
+  {
+    id: "contact-police",
+    name: "Police Department",
+    role: "Public safety",
+    phone: "864-543-2200 option 4"
+  },
+  { id: "contact-fire", name: "Fire Department", role: "Fire services", phone: "864-543-2200 option 5" },
+  { id: "contact-tourism", name: "Tourism", role: "Tourism", phone: "864-543-2200 option 6" },
+  { id: "contact-visitor-center", name: "Visitor Center", role: "Visitor information", phone: "864-543-2200 option 7" },
+  {
+    id: "contact-maintenance",
+    name: "Maintenance Department",
+    role: "Maintenance",
+    phone: "864-543-2200 option 8"
+  },
+  { id: "contact-code", name: "Code Enforcement", role: "Code Enforcement", phone: "864-543-2200 option 9" }
 ];
 
 export default async function ContactPage() {
   const snapshot = await getCmsSnapshot();
-  const staffRows =
-    snapshot.staff.length > 0
-      ? snapshot.staff.map((staff) => [
-          staff.name,
-          [staff.role, staff.department, staff.phone, staff.email].filter(Boolean).join(" | ")
-        ])
-      : contactRows;
+  const staffRows = snapshot.staff.length > 0 ? snapshot.staff : contactRows;
 
   return (
     <>
@@ -73,10 +83,26 @@ export default async function ContactPage() {
       <section className="page-section page-section-tight">
         <SectionHeading title="Staff directory" />
         <div className="department-grid">
-          {staffRows.map(([label, phone]) => (
-            <article className="department-card" key={label}>
-              <h3>{label}</h3>
-              <p>{phone}</p>
+          {staffRows.map((staff) => (
+            <article className="department-card staff-card" key={staff.id}>
+              {staff.profileImage ? (
+                <img
+                  className="profile-card-photo"
+                  src={staff.profileImage.src}
+                  alt={staff.profileImage.alt || `Photo of ${staff.name}`}
+                  loading="lazy"
+                />
+              ) : null}
+              <div>
+                <h3>{staff.name}</h3>
+                <p>{[staff.role, staff.department].filter(Boolean).join(" | ")}</p>
+                {staff.phone ? <p>{staff.phone}</p> : null}
+                {staff.email ? (
+                  <p>
+                    <a href={`mailto:${staff.email}`}>{staff.email}</a>
+                  </p>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>

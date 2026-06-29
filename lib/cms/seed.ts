@@ -319,6 +319,50 @@ export const seedContent: CmsSnapshot = {
       href: "https://townofninetysix.sc.gov/spring-craft-show"
     }
   ],
+  places: [
+    {
+      id: "place-visitor-center",
+      slug: "visitor-center",
+      title: "Visitor Center",
+      category: "visitor",
+      summary: "Visitor information, local history, tourism support, and community event information.",
+      body: [
+        "The Visitor Center is a helpful starting point for local information, town history, tourism, and community events.",
+        "Staff can replace this seed place with an official WordPress Places record and add current photos, hours, and map details."
+      ],
+      image: {
+        src: "/media/welcome.png",
+        alt: "Ninety Six visitor welcome sign"
+      },
+      address: "97 E. Main Street, Ninety Six, SC 29666",
+      latitude: "34.17518",
+      longitude: "-82.02395",
+      phone: "864-543-2200 option 7",
+      hours: "Contact Town Hall for current hours.",
+      featured: true
+    },
+    {
+      id: "place-town-hall",
+      slug: "town-hall",
+      title: "Town Hall",
+      category: "civic",
+      summary: "General town administration, clerk services, business licensing, and resident assistance.",
+      body: [
+        "Town Hall is the front door for most everyday town questions and resident services.",
+        "Use this place record for public location details, hours, phone information, and map directions."
+      ],
+      image: {
+        src: "/media/ninety-six-downtown.jpg",
+        alt: "Downtown Ninety Six streetscape"
+      },
+      address: "120 Main Street W, Ninety Six, SC 29666",
+      latitude: "34.17518",
+      longitude: "-82.02395",
+      phone: "864-543-2200",
+      hours: "Monday through Friday during posted Town Hall hours.",
+      featured: true
+    }
+  ],
   meetings: [
     {
       id: "meeting-2026-07",

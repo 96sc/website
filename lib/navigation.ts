@@ -8,6 +8,7 @@ export const primaryNavigation = [
 
 export const footerNavigation = [
   ...primaryNavigation,
+  { label: "Places", href: "/places" },
   { label: "Contact", href: "/contact" }
 ];
 

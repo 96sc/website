@@ -6,7 +6,7 @@ This WordPress plugin provides the staff-editable CMS for the Next.js public sit
 
 1. Copy `wordpress/ninety-six-headless-cms/` into the WordPress site's `wp-content/plugins/` directory.
 2. Activate **Town of Ninety Six Headless CMS** in WordPress.
-3. Add or import content in the new admin sections: Services, Alerts, Events, Meetings, Departments, Officials, Staff, Documents, and External Links. Use regular WordPress Posts for News.
+3. Add or import content in the new admin sections: Services, Alerts, Events, Places, Meetings, Departments, Officials, Staff, Documents, and External Links. Use regular WordPress Posts for News.
 4. For WordPress Pages that should appear in the public site snapshot, edit the page and check **Include in headless snapshot**.
 
 ## WP-CLI Local Test
@@ -70,7 +70,7 @@ The public snapshot is available at:
 The response matches the Next.js `CmsSnapshot` shape in `lib/cms/types.ts`:
 
 ```text
-pages, services, alerts, news, events, meetings, departments, officials, staff, documents, externalLinks
+pages, services, alerts, news, events, places, meetings, departments, officials, staff, documents, externalLinks
 ```
 
 Set the Next.js environment variable to the WordPress REST root:
@@ -112,6 +112,17 @@ environment has `NEXT_PUBLIC_APPLE_MAPS_EMBED_TOKEN` set.
 For richer place details, use Apple's Place ID Lookup tool and paste the value into **Apple Maps
 Place ID** on the event. If map fields are blank, the public event page falls back to a regular
 Apple Maps link.
+
+## Places
+
+Places power `/places`, individual place pages, community featured spaces, site search, and sitemap
+entries. Use Places for civic buildings, parks, historic sites, visitor stops, community spaces,
+businesses, and other locations around town.
+
+Each Place supports a category, summary, long description, uploaded or pasted image URL, image alt
+text, address, phone, email, website, public hours, and a **Featured place** checkbox. Fill in
+**Map latitude** and **Map longitude** to show the Apple Maps embed. Add **Apple Maps Place ID**
+when you want the embed to select a specific Apple Maps place.
 
 ## Editor Guidance
 

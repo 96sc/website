@@ -1,5 +1,5 @@
 import type { CmsSnapshot } from "./types";
-import { eventSlug, newsSlug } from "./links";
+import { eventSlug, newsSlug, placeSlug } from "./links";
 import { seedContent } from "./seed";
 import { getWordPressSnapshot } from "./wordpress";
 
@@ -14,6 +14,7 @@ export async function getCmsSnapshot(): Promise<CmsSnapshot> {
     alerts: wpSnapshot?.alerts ?? seedContent.alerts,
     news: wpSnapshot?.news ?? seedContent.news,
     events: wpSnapshot?.events ?? seedContent.events,
+    places: wpSnapshot?.places ?? seedContent.places,
     meetings: wpSnapshot?.meetings ?? seedContent.meetings,
     departments: wpSnapshot?.departments ?? seedContent.departments,
     officials: wpSnapshot?.officials ?? seedContent.officials,
@@ -36,6 +37,11 @@ export async function getPageBySlug(slug: string) {
 export async function getEventBySlug(slug: string) {
   const snapshot = await getCmsSnapshot();
   return snapshot.events.find((event) => eventSlug(event) === slug) ?? null;
+}
+
+export async function getPlaceBySlug(slug: string) {
+  const snapshot = await getCmsSnapshot();
+  return snapshot.places.find((place) => placeSlug(place) === slug) ?? null;
 }
 
 export async function getNewsBySlug(slug: string) {
