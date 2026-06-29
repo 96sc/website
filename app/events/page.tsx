@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ContactStrip } from "@/components/contact-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import { eventPath } from "@/lib/cms/links";
 import { buildEventsJsonLd, stringifyJsonLd } from "@/lib/structured-data";
 import { formatDate } from "@/lib/utils/date";
 
@@ -31,14 +33,14 @@ export default async function EventsPage() {
         <SectionHeading title="Upcoming and featured" />
         <div className="event-grid">
           {snapshot.events.map((event) => (
-            <article className="event-card" key={event.id}>
+            <Link className="event-card" href={eventPath(event)} key={event.id}>
               <p className="eyebrow">{formatDate(event.date)}</p>
               <h3>{event.title}</h3>
               <p>{event.summary}</p>
               <p>
                 <strong>{event.time}</strong> at {event.location}
               </p>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

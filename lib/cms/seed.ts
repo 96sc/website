@@ -251,32 +251,83 @@ export const seedContent: CmsSnapshot = {
       updatedAt: "2026-06-28"
     }
   ],
+  news: [
+    {
+      id: "news-business-license-renewals",
+      slug: "business-license-renewals",
+      title: "Business license renewals are available online",
+      summary: "Business owners can renew existing Town of Ninety Six business licenses through the official GovPossible portal.",
+      body: [
+        "Business owners can renew existing Town of Ninety Six business licenses through the official GovPossible portal.",
+        "Have the online access code from your renewal letter ready before starting the renewal process."
+      ],
+      date: "2026-06-28",
+      updatedAt: "2026-06-28",
+      href: externalLinks.businessLicensePortal
+    },
+    {
+      id: "news-trash-pickup",
+      slug: "trash-pickup-thursdays",
+      title: "Thursday is regular trash pickup day",
+      summary: "Trash pickup remains scheduled for Thursdays for households and businesses inside the town service area.",
+      body: [
+        "Trash pickup remains scheduled for Thursdays for households and businesses inside the town service area.",
+        "Place household trash out before pickup and keep carts clear of vehicles, mailboxes, and other obstructions."
+      ],
+      date: "2026-06-28",
+      updatedAt: "2026-06-28"
+    }
+  ],
   events: [
     {
       id: "event-council-july",
+      slug: "regular-town-council-meeting-july-2026",
       title: "Regular Town Council Meeting",
       date: "2026-07-20",
       time: "6:00 PM",
       location: "Ninety Six Visitors Center, 97 Main Street E",
+      address: "97 Main Street E, Ninety Six, SC 29666",
+      latitude: "34.17518",
+      longitude: "-82.02395",
       summary: "Regular meeting date based on the third-Monday schedule. Staff should verify agenda details before publishing.",
+      body: [
+        "Regular meeting date based on the third-Monday schedule.",
+        "Staff should verify agenda details before publishing."
+      ],
       href: "/government/meetings"
     },
     {
       id: "event-festival",
+      slug: "sc-festival-of-stars-2026",
       title: "SC Festival of Stars",
       date: "2026-07-04",
       time: "Schedule varies",
       location: "Ninety Six",
+      address: "Ninety Six, SC 29666",
+      latitude: "34.17518",
+      longitude: "-82.02395",
       summary: "Festival details should be managed as official event content in WordPress.",
+      body: [
+        "Festival details should be managed as official event content in WordPress.",
+        "Check official town channels for the latest schedule, road closure, and activity details."
+      ],
       href: "https://townofninetysix.sc.gov/sc-festival-stars"
     },
     {
       id: "event-craft",
+      slug: "spring-craft-show-2027",
       title: "Spring Craft Show",
       date: "2027-03-20",
       time: "To be announced",
       location: "Ninety Six",
+      address: "Ninety Six, SC 29666",
+      latitude: "34.17518",
+      longitude: "-82.02395",
       summary: "A placeholder event entry for the WordPress event workflow.",
+      body: [
+        "A placeholder event entry for the WordPress event workflow.",
+        "Town staff can replace this content with official event details in WordPress."
+      ],
       href: "https://townofninetysix.sc.gov/spring-craft-show"
     }
   ],
@@ -424,6 +475,29 @@ export const seedContent: CmsSnapshot = {
       role: "Councilmember",
       ward: "Ward 6",
       email: "kroller@ninetysixsc.gov"
+    }
+  ],
+  staff: [
+    {
+      id: "staff-town-clerk",
+      name: "Town Clerk",
+      role: "Town Hall Clerk",
+      department: "Town Hall",
+      phone: "864-543-2200 option 1"
+    },
+    {
+      id: "staff-municipal-court",
+      name: "Municipal Court Clerk",
+      role: "Municipal Court Clerk",
+      department: "Municipal Court",
+      phone: "864-543-2200 option 2"
+    },
+    {
+      id: "staff-visitor-center",
+      name: "Visitor Center",
+      role: "Visitor information",
+      department: "Tourism and Visitor Center",
+      phone: "864-543-2200 option 7"
     }
   ],
   documents: [

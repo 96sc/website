@@ -1,4 +1,5 @@
 import type { EventRecord } from "@/lib/cms/types";
+import { eventPath } from "@/lib/cms/links";
 
 const defaultSiteUrl = "https://ninetysixsc.gov";
 
@@ -105,7 +106,7 @@ export function buildEventsJsonLd(events: EventRecord[]) {
   const organizationId = `${siteUrl}/#organization`;
 
   return events.map((event) => {
-    const eventUrl = toAbsoluteUrl(event.href ?? "/events");
+    const eventUrl = toAbsoluteUrl(eventPath(event));
 
     return {
       "@context": "https://schema.org",
