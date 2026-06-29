@@ -21,9 +21,17 @@ export default async function Home() {
       return new Date(secondPost.date).getTime() - new Date(firstPost.date).getTime();
     })
     .slice(0, 3);
-  const activeAlerts = snapshot.alerts.filter((alert) => alert.active);
-  const activeTownAlert =
-    activeAlerts.find((alert) => alert.severity === "urgent") ?? activeAlerts[0];
+  const activeAlerts = snapshot.alerts
+    .filter((alert) => alert.active)
+    .sort((firstAlert, secondAlert) => {
+      if (firstAlert.severity === "urgent" && secondAlert.severity !== "urgent") return -1;
+      if (secondAlert.severity === "urgent" && firstAlert.severity !== "urgent") return 1;
+
+      return (
+        new Date(secondAlert.updatedAt).getTime() - new Date(firstAlert.updatedAt).getTime()
+      );
+    });
+  const activeTownAlert = activeAlerts[0];
   const activeTownAlertTone =
     activeTownAlert?.severity === "urgent" ? "urgent" : "general";
   const quickActions: Record<string, { label: string; note: string }> = {

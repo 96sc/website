@@ -55,12 +55,14 @@ async function getJson(path: string, options: WordPressApiOptions = {}): Promise
   }
 
   const urls = path === snapshotPath ? getSnapshotUrls(baseUrl) : [`${baseUrl.replace(/\/$/, "")}${path}`];
+  const fetchOptions =
+    process.env.NODE_ENV === "development"
+      ? ({ cache: "no-store" } as const)
+      : ({ next: { revalidate: 60 } } as const);
 
   for (const url of urls) {
     try {
-      const response = await fetch(url, {
-        next: { revalidate: 300 }
-      });
+      const response = await fetch(url, fetchOptions);
 
       if (!response.ok) {
         continue;
