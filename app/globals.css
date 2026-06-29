@@ -712,10 +712,6 @@ h3 {
     box-shadow 160ms ease;
 }
 
-.quick-action-item + .quick-action-item {
-  border-left: 0;
-}
-
 .quick-action-item:hover {
   border-color: rgba(35, 66, 255, 0.42);
   background: rgba(255, 255, 255, 0.84);
@@ -1505,10 +1501,6 @@ h3 {
 
   .quick-actions-strip {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .quick-action-item + .quick-action-item {
-    border-left: 0;
   }
 
   .service-grid,
