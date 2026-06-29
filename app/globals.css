@@ -700,7 +700,7 @@ h3 {
   min-height: 104px;
   padding: 1rem;
   border-radius: calc(var(--radius) - 2px);
-  background: linear-gradient(to bottom, white 0%, #edf0ff 18%, var(--blue) 70%, var(--blue) 100%);
+  background: var(--blue);
   transition:
     background 160ms ease,
     transform 160ms ease,
@@ -712,7 +712,7 @@ h3 {
 }
 
 .quick-action-item:hover {
-  background: linear-gradient(to bottom, white 0%, #e8edff 18%, #0f2dff 70%, #0f2dff 100%);
+  background: #0f2dff;
   box-shadow: 0 14px 28px rgba(35, 66, 255, 0.24);
   transform: translateY(-2px);
 }
