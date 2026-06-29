@@ -405,6 +405,7 @@ final class Ninety_Six_Headless_CMS {
 				'description' => 'Officials power the Mayor and Town Council page.',
 				'checklist' => [
 					'Add the role, ward, email, and committees.',
+					'Add a profile picture only when there is an approved public photo.',
 					'Use Mayor for the mayor record.',
 					'Publish the official.',
 				],
@@ -413,6 +414,7 @@ final class Ninety_Six_Headless_CMS {
 				'title_placeholder' => 'Staff member or office name',
 				'description' => 'Staff records power the public staff directory on the Contact page.',
 				'checklist' => [
+					'Add a profile picture only when there is an approved public photo.',
 					'Add the role, department, phone, and email.',
 					'Use office names when a person name should not be public.',
 					'Publish the staff record.',
@@ -778,6 +780,16 @@ final class Ninety_Six_Headless_CMS {
 			self::POST_OFFICIAL => array_merge(
 				$record_id,
 				[
+					'n96_official_image' => [
+						'label' => 'Profile picture',
+						'type' => 'image',
+						'help' => 'Optional. Upload or select an approved public photo, or paste an image URL.',
+					],
+					'n96_official_image_alt' => [
+						'label' => 'Profile picture alt text',
+						'type' => 'text',
+						'help' => 'Briefly describe the image for screen readers.',
+					],
 					'n96_official_role' => [
 						'label' => 'Role',
 						'type' => 'text',
@@ -800,6 +812,16 @@ final class Ninety_Six_Headless_CMS {
 			self::POST_STAFF => array_merge(
 				$record_id,
 				[
+					'n96_staff_image' => [
+						'label' => 'Profile picture',
+						'type' => 'image',
+						'help' => 'Optional. Upload or select an approved public photo, or paste an image URL.',
+					],
+					'n96_staff_image_alt' => [
+						'label' => 'Profile picture alt text',
+						'type' => 'text',
+						'help' => 'Briefly describe the image for screen readers.',
+					],
 					'n96_staff_role' => [
 						'label' => 'Role',
 						'type' => 'text',
@@ -1301,16 +1323,26 @@ final class Ninety_Six_Headless_CMS {
 		return array_values(
 			array_map(
 				static function (WP_Post $post): array {
-					return self::without_empty(
-						[
-							'id' => self::record_id($post, 'official'),
-							'name' => self::title($post),
-							'role' => self::meta($post, 'n96_official_role'),
-							'ward' => self::meta($post, 'n96_official_ward'),
-							'email' => self::meta($post, 'n96_official_email'),
-							'committees' => self::lines($post, 'n96_official_committees'),
-						]
-					);
+					$image_src = self::meta($post, 'n96_official_image');
+					$record = [
+						'id' => self::record_id($post, 'official'),
+						'name' => self::title($post),
+						'role' => self::meta($post, 'n96_official_role'),
+						'ward' => self::meta($post, 'n96_official_ward'),
+						'email' => self::meta($post, 'n96_official_email'),
+						'committees' => self::lines($post, 'n96_official_committees'),
+					];
+
+					if ($image_src !== '') {
+						$record['profileImage'] = self::without_empty(
+							[
+								'src' => $image_src,
+								'alt' => self::meta($post, 'n96_official_image_alt', self::title($post)),
+							]
+						);
+					}
+
+					return self::without_empty($record);
 				},
 				self::query_records(self::POST_OFFICIAL)
 			)
@@ -1321,16 +1353,26 @@ final class Ninety_Six_Headless_CMS {
 		return array_values(
 			array_map(
 				static function (WP_Post $post): array {
-					return self::without_empty(
-						[
-							'id' => self::record_id($post, 'staff'),
-							'name' => self::title($post),
-							'role' => self::meta($post, 'n96_staff_role'),
-							'department' => self::meta($post, 'n96_staff_department'),
-							'phone' => self::meta($post, 'n96_staff_phone'),
-							'email' => self::meta($post, 'n96_staff_email'),
-						]
-					);
+					$image_src = self::meta($post, 'n96_staff_image');
+					$record = [
+						'id' => self::record_id($post, 'staff'),
+						'name' => self::title($post),
+						'role' => self::meta($post, 'n96_staff_role'),
+						'department' => self::meta($post, 'n96_staff_department'),
+						'phone' => self::meta($post, 'n96_staff_phone'),
+						'email' => self::meta($post, 'n96_staff_email'),
+					];
+
+					if ($image_src !== '') {
+						$record['profileImage'] = self::without_empty(
+							[
+								'src' => $image_src,
+								'alt' => self::meta($post, 'n96_staff_image_alt', self::title($post)),
+							]
+						);
+					}
+
+					return self::without_empty($record);
 				},
 				self::query_records(self::POST_STAFF)
 			)

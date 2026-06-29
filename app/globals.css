@@ -1003,6 +1003,32 @@ h3 {
   padding: 1.25rem;
 }
 
+.staff-card,
+.official-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.profile-card-photo {
+  flex: 0 0 auto;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--cream);
+}
+
+.official-card-photo {
+  width: 88px;
+  height: 88px;
+}
+
+.staff-card > div,
+.official-card > div {
+  min-width: 0;
+}
+
 .news-card {
   display: grid;
   gap: 0.65rem;

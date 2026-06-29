@@ -146,6 +146,10 @@ export type OfficialRecord = {
   ward?: string;
   email?: string;
   committees?: string[];
+  profileImage?: {
+    src: string;
+    alt?: string;
+  };
 };
 
 export type StaffRecord = {
@@ -155,6 +159,10 @@ export type StaffRecord = {
   department?: string;
   phone?: string;
   email?: string;
+  profileImage?: {
+    src: string;
+    alt?: string;
+  };
 };
 
 export type CmsSnapshot = {

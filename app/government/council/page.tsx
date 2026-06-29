@@ -31,13 +31,23 @@ export default async function CouncilPage() {
         <div className="official-grid">
           {snapshot.officials.map((official) => (
             <article className="official-card" key={official.id}>
-              <p className="eyebrow">{official.ward ?? official.role}</p>
-              <h3>{official.name}</h3>
-              <p>{official.role}</p>
-              {official.email ? <p><a href={`mailto:${official.email}`}>{official.email}</a></p> : null}
-              {official.committees?.length ? (
-                <p>Committees: {official.committees.join(", ")}</p>
+              {official.profileImage ? (
+                <img
+                  className="profile-card-photo official-card-photo"
+                  src={official.profileImage.src}
+                  alt={official.profileImage.alt || `Photo of ${official.name}`}
+                  loading="lazy"
+                />
               ) : null}
+              <div>
+                <p className="eyebrow">{official.ward ?? official.role}</p>
+                <h3>{official.name}</h3>
+                <p>{official.role}</p>
+                {official.email ? <p><a href={`mailto:${official.email}`}>{official.email}</a></p> : null}
+                {official.committees?.length ? (
+                  <p>Committees: {official.committees.join(", ")}</p>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>
