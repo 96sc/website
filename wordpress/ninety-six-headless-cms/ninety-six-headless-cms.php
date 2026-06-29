@@ -552,6 +552,11 @@ final class Ninety_Six_Headless_CMS {
 						'label' => 'Alert URL',
 						'type' => 'url',
 					],
+					'n96_alert_icon_svg' => [
+						'label' => 'Custom icon SVG',
+						'type' => 'svg',
+						'help' => 'Optional. Paste a complete inline SVG, such as <svg viewBox="0 0 24 24">...</svg>. The website uses the bell icon when this is blank.',
+					],
 				]
 			),
 			self::POST_EVENT => array_merge(
@@ -729,6 +734,11 @@ final class Ninety_Six_Headless_CMS {
 		$field_name = esc_attr($key);
 		$type = $field['type'];
 
+		if ($type === 'svg') {
+			echo '<textarea class="large-text code" rows="8" id="' . $field_id . '" name="' . $field_name . '" spellcheck="false">' . esc_textarea($value) . '</textarea>';
+			return;
+		}
+
 		if ($type === 'textarea') {
 			echo '<textarea class="large-text" rows="4" id="' . $field_id . '" name="' . $field_name . '">' . esc_textarea($value) . '</textarea>';
 			return;
@@ -776,6 +786,10 @@ final class Ninety_Six_Headless_CMS {
 			return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) ? $value : '';
 		}
 
+		if ($type === 'svg') {
+			return self::sanitize_svg($value);
+		}
+
 		if ($type === 'select') {
 			$options = array_keys($field['options'] ?? []);
 			return in_array($value, $options, true) ? $value : ($options[0] ?? '');
@@ -786,6 +800,114 @@ final class Ninety_Six_Headless_CMS {
 		}
 
 		return sanitize_text_field($value);
+	}
+
+	private static function sanitize_svg(string $value): string {
+		if ($value === '' || stripos($value, '<svg') === false || stripos($value, '</svg>') === false) {
+			return '';
+		}
+
+		$allowed_svg = [
+			'svg' => [
+				'aria-hidden' => true,
+				'class' => true,
+				'fill' => true,
+				'focusable' => true,
+				'height' => true,
+				'role' => true,
+				'stroke' => true,
+				'stroke-linecap' => true,
+				'stroke-linejoin' => true,
+				'stroke-width' => true,
+				'viewBox' => true,
+				'viewbox' => true,
+				'width' => true,
+				'xmlns' => true,
+			],
+			'g' => [
+				'class' => true,
+				'fill' => true,
+				'stroke' => true,
+				'stroke-linecap' => true,
+				'stroke-linejoin' => true,
+				'stroke-width' => true,
+				'transform' => true,
+			],
+			'path' => [
+				'class' => true,
+				'clip-rule' => true,
+				'd' => true,
+				'fill' => true,
+				'fill-rule' => true,
+				'stroke' => true,
+				'stroke-linecap' => true,
+				'stroke-linejoin' => true,
+				'stroke-width' => true,
+				'transform' => true,
+			],
+			'circle' => [
+				'class' => true,
+				'cx' => true,
+				'cy' => true,
+				'fill' => true,
+				'r' => true,
+				'stroke' => true,
+				'stroke-width' => true,
+			],
+			'ellipse' => [
+				'class' => true,
+				'cx' => true,
+				'cy' => true,
+				'fill' => true,
+				'rx' => true,
+				'ry' => true,
+				'stroke' => true,
+				'stroke-width' => true,
+			],
+			'line' => [
+				'class' => true,
+				'fill' => true,
+				'stroke' => true,
+				'stroke-linecap' => true,
+				'stroke-width' => true,
+				'x1' => true,
+				'x2' => true,
+				'y1' => true,
+				'y2' => true,
+			],
+			'polygon' => [
+				'class' => true,
+				'fill' => true,
+				'points' => true,
+				'stroke' => true,
+				'stroke-linejoin' => true,
+				'stroke-width' => true,
+			],
+			'polyline' => [
+				'class' => true,
+				'fill' => true,
+				'points' => true,
+				'stroke' => true,
+				'stroke-linecap' => true,
+				'stroke-linejoin' => true,
+				'stroke-width' => true,
+			],
+			'rect' => [
+				'class' => true,
+				'fill' => true,
+				'height' => true,
+				'rx' => true,
+				'ry' => true,
+				'stroke' => true,
+				'stroke-width' => true,
+				'width' => true,
+				'x' => true,
+				'y' => true,
+			],
+			'title' => [],
+		];
+
+		return trim(wp_kses($value, $allowed_svg));
 	}
 
 	private static function page_records(): array {
@@ -842,6 +964,7 @@ final class Ninety_Six_Headless_CMS {
 			array_map(
 				static function (WP_Post $post): array {
 					$href = self::meta($post, 'n96_alert_href');
+					$icon_svg = self::meta($post, 'n96_alert_icon_svg');
 					$record = [
 						'id' => self::record_id($post, 'alert'),
 						'title' => self::title($post),
@@ -853,6 +976,10 @@ final class Ninety_Six_Headless_CMS {
 
 					if ($href !== '') {
 						$record['href'] = $href;
+					}
+
+					if ($icon_svg !== '') {
+						$record['iconSvg'] = $icon_svg;
 					}
 
 					return $record;

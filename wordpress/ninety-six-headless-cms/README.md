@@ -117,4 +117,6 @@ Apple Maps link.
 
 Each custom content type has a **Publishing checklist** box in the editor. For Alerts, fill in the
 title, alert message, severity, and check **Active** when it should display on the public site.
+Alerts also include an optional **Custom icon SVG** field. Paste a complete inline SVG there when
+the public alert should use a specific icon instead of the default bell.
 Published WordPress Posts appear as News and receive their own public pages.

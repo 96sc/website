@@ -1,4 +1,5 @@
 import type { AlertRecord } from "@/lib/cms/types";
+import { CustomSvgIcon } from "./custom-svg-icon";
 import { Icon } from "./icon";
 
 type AlertBannerProps = {
@@ -19,7 +20,11 @@ export function AlertBanner({ alerts }: AlertBannerProps) {
             href={alert.href ?? "#"}
             key={alert.id}
           >
-            <Icon name="bell" width={18} height={18} />
+            <CustomSvgIcon
+              svg={alert.iconSvg}
+              className="custom-alert-svg"
+              fallback={<Icon name="bell" width={18} height={18} />}
+            />
             <span>
               <strong>{alert.title}:</strong> {alert.message}
             </span>
