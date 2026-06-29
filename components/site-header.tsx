@@ -3,20 +3,78 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { primaryNavigation } from "@/lib/navigation";
 import { Icon } from "./icon";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [overHero, setOverHero] = useState(isHome);
+  const useHeroHeader = isHome && overHero;
+  const headerClassName = [
+    "site-header",
+    isHome ? "site-header-home" : null,
+    useHeroHeader ? "site-header-over-hero" : null
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  useEffect(() => {
+    if (!isHome) {
+      setOverHero(false);
+      return;
+    }
+
+    const updateHeaderTone = () => {
+      const hero = document.querySelector<HTMLElement>(".hero");
+      const header = document.querySelector<HTMLElement>(".site-header");
+
+      if (!hero || !header) {
+        setOverHero(false);
+        return;
+      }
+
+      setOverHero(hero.getBoundingClientRect().bottom > header.offsetHeight);
+    };
+
+    updateHeaderTone();
+
+    const hero = document.querySelector<HTMLElement>(".hero");
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const observer =
+      hero && header
+        ? new IntersectionObserver(
+            ([entry]) => {
+              setOverHero(entry.isIntersecting);
+            },
+            {
+              rootMargin: `-${header.offsetHeight}px 0px 0px 0px`,
+              threshold: 0
+            }
+          )
+        : null;
+
+    if (observer && hero) {
+      observer.observe(hero);
+    }
+    window.addEventListener("scroll", updateHeaderTone, { passive: true });
+    window.addEventListener("resize", updateHeaderTone);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("scroll", updateHeaderTone);
+      window.removeEventListener("resize", updateHeaderTone);
+    };
+  }, [isHome]);
 
   return (
-    <header className="site-header">
+    <header className={headerClassName}>
       <div className="main-nav-wrap">
         <Link className="brand-link" href="/" aria-label="Town of Ninety Six home">
           <Image
-            src="/brand/96Logo-Black.svg"
+            src={useHeroHeader ? "/brand/96Logo-White.svg" : "/brand/96Logo-Black.svg"}
             alt="Town of Ninety Six"
             width={220}
             height={61}
