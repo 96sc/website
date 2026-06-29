@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ActionLink } from "@/components/action-link";
 import { ContactStrip } from "@/components/contact-strip";
+import { CustomSvgIcon } from "@/components/custom-svg-icon";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
@@ -21,11 +22,26 @@ export default async function Home() {
       return new Date(secondPost.date).getTime() - new Date(firstPost.date).getTime();
     })
     .slice(0, 3);
-  const activeAlerts = snapshot.alerts.filter((alert) => alert.active);
-  const activeTownAlert =
-    activeAlerts.find((alert) => alert.severity === "urgent") ?? activeAlerts[0];
+  const activeAlerts = snapshot.alerts
+    .filter((alert) => alert.active)
+    .sort((firstAlert, secondAlert) => {
+      if (firstAlert.severity === "urgent" && secondAlert.severity !== "urgent") return -1;
+      if (secondAlert.severity === "urgent" && firstAlert.severity !== "urgent") return 1;
+
+      return (
+        new Date(secondAlert.updatedAt).getTime() - new Date(firstAlert.updatedAt).getTime()
+      );
+    });
+  const activeTownAlert = activeAlerts[0];
   const activeTownAlertTone =
     activeTownAlert?.severity === "urgent" ? "urgent" : "general";
+  const quickActionsSectionClass = [
+    "quick-actions-section",
+    activeTownAlert ? "has-alert" : null,
+    activeTownAlert?.severity === "urgent" ? "has-urgent-alert" : null
+  ]
+    .filter(Boolean)
+    .join(" ");
   const quickActions: Record<string, { label: string; note: string }> = {
     "trash-collection": { label: "Trash pickup", note: "Thursday service" },
     "pay-ticket": { label: "Pay a bill", note: "Tickets and court payments" },
@@ -63,7 +79,7 @@ export default async function Home() {
       </section>
 
       <section
-        className={activeTownAlert ? "quick-actions-section has-alert" : "quick-actions-section"}
+        className={quickActionsSectionClass}
         aria-label="Common town services"
       >
         {activeTownAlert ? (
@@ -73,7 +89,11 @@ export default async function Home() {
             aria-label={`${activeTownAlert.title}: ${activeTownAlert.message}`}
           >
             <span className="common-services-alert-icon">
-              <Icon name="bell" width={22} height={22} />
+              <CustomSvgIcon
+                svg={activeTownAlert.iconSvg}
+                className="custom-alert-svg"
+                fallback={<Icon name="bell" width={22} height={22} />}
+              />
             </span>
             <span className="common-services-alert-copy">
               <strong>{activeTownAlert.title}</strong>
@@ -86,10 +106,6 @@ export default async function Home() {
           </Link>
         ) : null}
         <div className="quick-actions-strip">
-          <div className="quick-actions-intro">
-            <p className="eyebrow">Common services</p>
-            <h2>Start with what you need.</h2>
-          </div>
           {featuredServices.map((service) => (
             <Link className="quick-action-item" href={`/services/${service.slug}`} key={service.id}>
               <span className="quick-action-icon">
