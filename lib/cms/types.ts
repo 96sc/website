@@ -99,6 +99,28 @@ export type EventRecord = {
   href?: string;
 };
 
+export type PlaceRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  category: "civic" | "park" | "historic" | "business" | "community" | "visitor" | "other";
+  summary: string;
+  body?: string[];
+  image?: {
+    src: string;
+    alt?: string;
+  };
+  address: string;
+  latitude?: string;
+  longitude?: string;
+  applePlaceId?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  hours?: string;
+  featured?: boolean;
+};
+
 export type MeetingRecord = {
   id: string;
   title: string;
@@ -141,6 +163,7 @@ export type CmsSnapshot = {
   alerts: AlertRecord[];
   news: NewsRecord[];
   events: EventRecord[];
+  places: PlaceRecord[];
   meetings: MeetingRecord[];
   departments: DepartmentRecord[];
   officials: OfficialRecord[];

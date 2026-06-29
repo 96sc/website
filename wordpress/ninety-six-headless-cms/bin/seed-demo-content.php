@@ -16,6 +16,7 @@ $required_post_types = [
 	'n96_service',
 	'n96_alert',
 	'n96_event',
+	'n96_place',
 	'n96_meeting',
 	'n96_department',
 	'n96_official',
@@ -246,6 +247,29 @@ n96_cli_upsert_post(
 		'n96_meeting_time' => '6:00 PM',
 		'n96_meeting_location' => 'Ninety Six Visitors Center, 97 Main Street E',
 		'n96_document_refs' => 'legacy-records',
+	]
+);
+
+n96_cli_upsert_post(
+	[
+		'post_type' => 'n96_place',
+		'post_title' => 'Visitor Center',
+		'post_name' => 'visitor-center',
+		'post_excerpt' => 'Visitor information, local history, tourism support, and community event information.',
+	],
+	[
+		'n96_record_id' => 'place-visitor-center',
+		'n96_summary' => 'Visitor information, local history, tourism support, and community event information.',
+		'n96_place_category' => 'visitor',
+		'n96_place_description' => "The Visitor Center is a helpful starting point for local information, town history, tourism, and community events.\nStaff can replace this seed place with current photos, hours, and map details.",
+		'n96_place_image' => '/media/welcome.png',
+		'n96_place_image_alt' => 'Ninety Six visitor welcome sign',
+		'n96_place_address' => '97 E. Main Street, Ninety Six, SC 29666',
+		'n96_place_latitude' => '34.17518',
+		'n96_place_longitude' => '-82.02395',
+		'n96_place_phone' => '864-543-2200 option 7',
+		'n96_place_hours' => 'Contact Town Hall for current hours.',
+		'n96_place_featured' => '1',
 	]
 );
 

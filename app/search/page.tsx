@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ContactStrip } from "@/components/contact-strip";
 import { Icon } from "@/components/icon";
 import { getCmsSnapshot } from "@/lib/cms/content";
-import { eventPath, newsPath } from "@/lib/cms/links";
+import { eventPath, newsPath, placePath } from "@/lib/cms/links";
 import type { CmsSnapshot } from "@/lib/cms/types";
 import { formatDate, formatDateRange, formatTimeRange } from "@/lib/utils/date";
 
@@ -49,9 +49,33 @@ const coreResults: SearchResult[] = [
     id: "core-community",
     type: "Page",
     title: "Community",
-    summary: "Events, parks, recreation, family resources, volunteer opportunities, and local history.",
+    summary: "Community hub for events, local spaces, resources, ways to get involved, and history.",
     href: "/community",
-    keywords: ["community", "parks", "recreation", "family", "volunteer", "history", "events"]
+    keywords: ["community", "parks", "recreation", "family", "volunteer", "history", "events", "resources"]
+  },
+  {
+    id: "core-community-resources",
+    type: "Page",
+    title: "Community Resources",
+    summary: "Practical links for services, town contacts, meetings, records, events, and local information.",
+    href: "/community/resources",
+    keywords: ["community", "resources", "services", "contacts", "records", "meetings", "family", "help"]
+  },
+  {
+    id: "core-get-involved",
+    type: "Page",
+    title: "Get Involved",
+    summary: "Ways to participate through meetings, council requests, town contacts, and community events.",
+    href: "/community/get-involved",
+    keywords: ["get involved", "volunteer", "participate", "council", "meetings", "agenda", "community"]
+  },
+  {
+    id: "core-history",
+    type: "Page",
+    title: "History",
+    summary: "Ninety Six history, Revolutionary War heritage, landmarks, and community traditions.",
+    href: "/community/history",
+    keywords: ["history", "historic", "heritage", "revolutionary war", "landmarks", "traditions"]
   },
   {
     id: "core-visit",
@@ -76,6 +100,14 @@ const coreResults: SearchResult[] = [
     summary: "Upcoming town events, public meetings, closures, and community happenings.",
     href: "/events",
     keywords: ["event", "calendar", "festival", "meeting", "notice"]
+  },
+  {
+    id: "core-places",
+    type: "Page",
+    title: "Places",
+    summary: "Civic buildings, visitor stops, parks, historic sites, community spaces, and local destinations.",
+    href: "/places",
+    keywords: ["places", "location", "map", "visitor center", "town hall", "parks", "historic", "directions"]
   },
   {
     id: "core-privacy",
@@ -183,6 +215,24 @@ function createSearchIndex(snapshot: CmsSnapshot): SearchResult[] {
         formatDate(event.date),
         event.endDate ? formatDate(event.endDate) : "",
         ...(event.body ?? [])
+      ]
+    })),
+    ...snapshot.places.map((place) => ({
+      id: place.id,
+      type: "Place",
+      title: place.title,
+      summary: `${place.address}. ${place.summary}`,
+      href: placePath(place),
+      keywords: [
+        place.title,
+        place.category,
+        place.summary,
+        place.address,
+        place.phone ?? "",
+        place.email ?? "",
+        place.website ?? "",
+        place.hours ?? "",
+        ...(place.body ?? [])
       ]
     })),
     ...snapshot.meetings.map((meeting) => ({

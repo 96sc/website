@@ -1,5 +1,5 @@
-import type { EventRecord } from "@/lib/cms/types";
-import { eventPath } from "@/lib/cms/links";
+import type { EventRecord, PlaceRecord } from "@/lib/cms/types";
+import { eventPath, placePath } from "@/lib/cms/links";
 
 const defaultSiteUrl = "https://ninetysixsc.gov";
 
@@ -132,4 +132,38 @@ export function buildEventsJsonLd(events: EventRecord[]) {
       url: eventUrl
     };
   });
+}
+
+export function buildPlaceJsonLd(place: PlaceRecord) {
+  const placeUrl = toAbsoluteUrl(placePath(place));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    "@id": `${placeUrl}#${place.id}`,
+    name: place.title,
+    description: place.summary,
+    url: placeUrl,
+    ...(place.image ? { image: toAbsoluteUrl(place.image.src) } : {}),
+    ...(place.phone ? { telephone: place.phone } : {}),
+    ...(place.website ? { sameAs: place.website } : {}),
+    ...(place.hours ? { openingHours: place.hours } : {}),
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: place.address,
+      addressLocality: "Ninety Six",
+      addressRegion: "SC",
+      postalCode: "29666",
+      addressCountry: "US"
+    },
+    ...(place.latitude && place.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: place.latitude,
+            longitude: place.longitude
+          }
+        }
+      : {})
+  };
 }

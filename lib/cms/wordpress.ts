@@ -36,6 +36,7 @@ function normalizeSnapshot(value: unknown): Partial<CmsSnapshot> | null {
     alerts: readCollection<CmsSnapshot["alerts"]>(source.alerts),
     news: readCollection<CmsSnapshot["news"]>(source.news),
     events: readCollection<CmsSnapshot["events"]>(source.events),
+    places: readCollection<CmsSnapshot["places"]>(source.places),
     meetings: readCollection<CmsSnapshot["meetings"]>(source.meetings),
     departments: readCollection<CmsSnapshot["departments"]>(source.departments),
     officials: readCollection<CmsSnapshot["officials"]>(source.officials),

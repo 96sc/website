@@ -1,4 +1,4 @@
-import type { EventRecord, NewsRecord } from "@/lib/cms/types";
+import type { EventRecord, NewsRecord, PlaceRecord } from "@/lib/cms/types";
 
 function slugify(value: string) {
   return value
@@ -15,12 +15,20 @@ export function newsSlug(post: NewsRecord) {
   return post.slug || slugify(post.title) || post.id;
 }
 
+export function placeSlug(place: PlaceRecord) {
+  return place.slug || slugify(place.title) || place.id;
+}
+
 export function eventPath(event: EventRecord) {
   return `/events/${eventSlug(event)}`;
 }
 
 export function newsPath(post: NewsRecord) {
   return `/news/${newsSlug(post)}`;
+}
+
+export function placePath(place: PlaceRecord) {
+  return `/places/${placeSlug(place)}`;
 }
 
 export function isExternalHref(href: string) {

@@ -13,6 +13,7 @@ final class Ninety_Six_Headless_CMS {
 	private const POST_SERVICE = 'n96_service';
 	private const POST_ALERT = 'n96_alert';
 	private const POST_EVENT = 'n96_event';
+	private const POST_PLACE = 'n96_place';
 	private const POST_MEETING = 'n96_meeting';
 	private const POST_DEPARTMENT = 'n96_department';
 	private const POST_OFFICIAL = 'n96_official';
@@ -25,9 +26,14 @@ final class Ninety_Six_Headless_CMS {
 		add_action('init', [__CLASS__, 'register_meta_fields']);
 		add_action('add_meta_boxes', [__CLASS__, 'add_meta_boxes']);
 		add_action('save_post', [__CLASS__, 'save_meta'], 10, 2);
+		add_action('admin_menu', [__CLASS__, 'remove_unused_admin_menus'], 999);
 		add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
 		add_action('rest_api_init', [__CLASS__, 'register_rest_routes']);
 		add_filter('enter_title_here', [__CLASS__, 'title_placeholder'], 10, 2);
+	}
+
+	public static function remove_unused_admin_menus(): void {
+		remove_menu_page('themes.php');
 	}
 
 	public static function register_content_types(): void {
@@ -227,6 +233,7 @@ final class Ninety_Six_Headless_CMS {
 				'alerts' => self::alert_records(),
 				'news' => self::news_records(),
 				'events' => self::event_records(),
+				'places' => self::place_records(),
 				'meetings' => self::meeting_records($document_index),
 				'departments' => self::department_records(),
 				'officials' => self::official_records(),
@@ -274,36 +281,43 @@ final class Ninety_Six_Headless_CMS {
 				'icon' => 'dashicons-groups',
 				'position' => 23,
 			],
+			self::POST_PLACE => [
+				'singular' => 'Place',
+				'plural' => 'Places',
+				'icon' => 'dashicons-location-alt',
+				'position' => 24,
+				'supports' => ['title', 'revisions', 'page-attributes'],
+			],
 			self::POST_DEPARTMENT => [
 				'singular' => 'Department',
 				'plural' => 'Departments',
 				'icon' => 'dashicons-building',
-				'position' => 24,
+				'position' => 25,
 			],
 			self::POST_OFFICIAL => [
 				'singular' => 'Official',
 				'plural' => 'Officials',
 				'icon' => 'dashicons-id',
-				'position' => 25,
+				'position' => 26,
 			],
 			self::POST_STAFF => [
 				'singular' => 'Staff Member',
 				'plural' => 'Staff',
 				'icon' => 'dashicons-businessperson',
-				'position' => 26,
+				'position' => 27,
 				'supports' => ['title', 'revisions', 'page-attributes'],
 			],
 			self::POST_DOCUMENT => [
 				'singular' => 'Document',
 				'plural' => 'Documents',
 				'icon' => 'dashicons-media-document',
-				'position' => 27,
+				'position' => 28,
 			],
 			self::POST_EXTERNAL_LINK => [
 				'singular' => 'External Link',
 				'plural' => 'External Links',
 				'icon' => 'dashicons-admin-links',
-				'position' => 28,
+				'position' => 29,
 			],
 		];
 	}
@@ -364,6 +378,17 @@ final class Ninety_Six_Headless_CMS {
 					'Add the meeting date, time, and location.',
 					'Add related document IDs or slugs after creating Documents.',
 					'Publish the meeting.',
+				],
+			],
+			self::POST_PLACE => [
+				'title_placeholder' => 'Place name, such as Visitor Center',
+				'description' => 'Places power the public Places directory, place detail pages, community hubs, search, maps, and directions.',
+				'checklist' => [
+					'Enter the public place name in the title field.',
+					'Choose the category and add a short summary.',
+					'Add a public image, address, contact details, hours, and map fields.',
+					'Use latitude and longitude to show the Apple Maps embed.',
+					'Publish the place.',
 				],
 			],
 			self::POST_DEPARTMENT => [
@@ -661,6 +686,82 @@ final class Ninety_Six_Headless_CMS {
 					],
 				],
 				$document_refs
+			),
+			self::POST_PLACE => array_merge(
+				$record_id,
+				$summary,
+				[
+					'n96_place_category' => [
+						'label' => 'Place category',
+						'type' => 'select',
+						'options' => [
+							'civic' => 'Civic',
+							'park' => 'Park or outdoor space',
+							'historic' => 'Historic site',
+							'business' => 'Business',
+							'community' => 'Community space',
+							'visitor' => 'Visitor information',
+							'other' => 'Other',
+						],
+					],
+					'n96_place_description' => [
+						'label' => 'Place description',
+						'type' => 'textarea',
+						'help' => 'Longer public details. One paragraph per line. Falls back to Summary when empty.',
+					],
+					'n96_place_image' => [
+						'label' => 'Place image',
+						'type' => 'image',
+						'help' => 'Upload or select a public photo, or paste an image URL.',
+					],
+					'n96_place_image_alt' => [
+						'label' => 'Place image alt text',
+						'type' => 'text',
+						'help' => 'Briefly describe the image for screen readers.',
+					],
+					'n96_place_address' => [
+						'label' => 'Street address',
+						'type' => 'text',
+						'help' => 'Full public address used for directions and Apple Maps.',
+					],
+					'n96_place_latitude' => [
+						'label' => 'Map latitude',
+						'type' => 'text',
+						'help' => 'Required with longitude to show the Apple Maps embed.',
+					],
+					'n96_place_longitude' => [
+						'label' => 'Map longitude',
+						'type' => 'text',
+						'help' => 'Required with latitude to show the Apple Maps embed.',
+					],
+					'n96_place_apple_place_id' => [
+						'label' => 'Apple Maps Place ID',
+						'type' => 'text',
+						'help' => 'Optional but recommended. Use Apple Place ID Lookup, then paste the Place ID here.',
+					],
+					'n96_place_phone' => [
+						'label' => 'Public phone',
+						'type' => 'text',
+					],
+					'n96_place_email' => [
+						'label' => 'Public email',
+						'type' => 'email',
+					],
+					'n96_place_website' => [
+						'label' => 'Website URL',
+						'type' => 'url',
+					],
+					'n96_place_hours' => [
+						'label' => 'Public hours',
+						'type' => 'textarea',
+						'help' => 'Use one line per day or note.',
+					],
+					'n96_place_featured' => [
+						'label' => 'Featured place',
+						'type' => 'checkbox',
+						'help' => 'Featured places can be highlighted on public hub pages.',
+					],
+				]
 			),
 			self::POST_DEPARTMENT => array_merge(
 				$record_id,
@@ -1116,6 +1217,46 @@ final class Ninety_Six_Headless_CMS {
 					return self::without_empty($record);
 				},
 				self::query_records(self::POST_EVENT, 'n96_event_date', 'ASC')
+			)
+		);
+	}
+
+	private static function place_records(): array {
+		return array_values(
+			array_map(
+				static function (WP_Post $post): array {
+					$image_src = self::meta($post, 'n96_place_image');
+					$description = self::lines($post, 'n96_place_description');
+					$record = [
+						'id' => self::record_id($post, 'place'),
+						'slug' => self::slug($post),
+						'title' => self::title($post),
+						'category' => self::meta($post, 'n96_place_category', 'other'),
+						'summary' => self::summary($post),
+						'body' => !empty($description) ? $description : self::body($post),
+						'address' => self::meta($post, 'n96_place_address'),
+						'latitude' => self::meta($post, 'n96_place_latitude'),
+						'longitude' => self::meta($post, 'n96_place_longitude'),
+						'applePlaceId' => self::meta($post, 'n96_place_apple_place_id'),
+						'phone' => self::meta($post, 'n96_place_phone'),
+						'email' => self::meta($post, 'n96_place_email'),
+						'website' => self::meta($post, 'n96_place_website'),
+						'hours' => self::meta($post, 'n96_place_hours'),
+						'featured' => self::bool_meta($post, 'n96_place_featured'),
+					];
+
+					if ($image_src !== '') {
+						$record['image'] = self::without_empty(
+							[
+								'src' => $image_src,
+								'alt' => self::meta($post, 'n96_place_image_alt', self::title($post)),
+							]
+						);
+					}
+
+					return self::without_empty($record);
+				},
+				self::query_records(self::POST_PLACE)
 			)
 		);
 	}
