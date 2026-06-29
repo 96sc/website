@@ -8,13 +8,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://ninetysixsc.gov"),
   title: {
-    default: "Town of Ninety Six, South Carolina",
-    template: "%s | Town of Ninety Six"
+    default: "Town of Ninety Six",
+    template: "%s | Town of Ninety Six, SC"
   },
   description:
     "Official civic website for the Town of Ninety Six, South Carolina, with resident services, meetings, departments, events, business resources, and contact information.",
   openGraph: {
-    title: "Town of Ninety Six, South Carolina",
+    title: "Town of Ninety Six",
     description:
       "Resident-first civic services, meetings, events, departments, and town information.",
     images: ["/media/welcome.png"],
