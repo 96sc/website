@@ -63,13 +63,30 @@ export type AlertRecord = {
   updatedAt: string;
 };
 
+export type NewsRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  body: string[];
+  date: string;
+  updatedAt: string;
+  href?: string;
+};
+
 export type EventRecord = {
   id: string;
+  slug: string;
   title: string;
   date: string;
   time: string;
   location: string;
+  address?: string;
+  latitude?: string;
+  longitude?: string;
+  applePlaceId?: string;
   summary: string;
+  body?: string[];
   href?: string;
 };
 
@@ -100,14 +117,25 @@ export type OfficialRecord = {
   committees?: string[];
 };
 
+export type StaffRecord = {
+  id: string;
+  name: string;
+  role: string;
+  department?: string;
+  phone?: string;
+  email?: string;
+};
+
 export type CmsSnapshot = {
   pages: PageRecord[];
   services: ServiceRecord[];
   alerts: AlertRecord[];
+  news: NewsRecord[];
   events: EventRecord[];
   meetings: MeetingRecord[];
   departments: DepartmentRecord[];
   officials: OfficialRecord[];
+  staff: StaffRecord[];
   documents: DocumentRecord[];
   externalLinks: ExternalLink[];
 };

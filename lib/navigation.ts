@@ -5,6 +5,7 @@ export const primaryNavigation = [
   { label: "Business", href: "/business" },
   { label: "Visitors", href: "/visitors" },
   { label: "Events", href: "/events" },
+  { label: "News", href: "/news" },
   { label: "Contact", href: "/contact" }
 ];
 

@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import { eventPath, newsPath } from "@/lib/cms/links";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ninetysixsc.gov";
   const snapshot = await getCmsSnapshot();
 
-  const staticRoutes = ["", "/search", "/services", "/government", "/government/council", "/government/meetings", "/government/departments", "/residents", "/business", "/visitors", "/events", "/contact"];
+  const staticRoutes = ["", "/search", "/services", "/government", "/government/council", "/government/meetings", "/government/departments", "/residents", "/business", "/visitors", "/events", "/news", "/contact"];
 
   return [
     ...staticRoutes.map((route) => ({
@@ -15,6 +16,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...snapshot.services.map((service) => ({
       url: `${baseUrl}/services/${service.slug}`,
       lastModified: new Date()
+    })),
+    ...snapshot.events.map((event) => ({
+      url: `${baseUrl}${eventPath(event)}`,
+      lastModified: new Date(event.date)
+    })),
+    ...snapshot.news.map((post) => ({
+      url: `${baseUrl}${newsPath(post)}`,
+      lastModified: new Date(post.updatedAt)
     }))
   ];
 }

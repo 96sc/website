@@ -4,17 +4,29 @@ import { ContactStrip } from "@/components/contact-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { ServiceTile } from "@/components/service-tile";
 import { getCmsSnapshot, getPageBySlug } from "@/lib/cms/content";
-import { externalLinks } from "@/lib/cms/seed";
 
 export const metadata: Metadata = {
   title: "Business",
   description: "Business license renewal, forms, contacts, and business resources for Ninety Six."
 };
 
+function isExternalHref(href: string) {
+  return /^https?:\/\//.test(href);
+}
+
 export default async function BusinessPage() {
   const snapshot = await getCmsSnapshot();
   const page = await getPageBySlug("business");
   const licenseService = snapshot.services.find((service) => service.slug === "business-license-renewal");
+  const businessLicenseLink =
+    snapshot.externalLinks.find((link) => link.id === "link-business") ??
+    snapshot.externalLinks.find((link) =>
+      link.type === "payment" && /business license/i.test(`${link.title} ${link.description}`)
+    );
+  const ordinanceLink =
+    snapshot.externalLinks.find((link) => link.id === "link-ordinances") ??
+    snapshot.externalLinks.find((link) => link.type === "ordinance");
+  const businessLicenseHref = businessLicenseLink?.href ?? licenseService?.action.href ?? "/contact";
 
   return (
     <>
@@ -24,7 +36,7 @@ export default async function BusinessPage() {
           <h1>{page?.summary ?? "Business resources for Ninety Six."}</h1>
           <p>{page?.body[0]}</p>
           <div className="button-row">
-            <ActionLink href={externalLinks.businessLicensePortal} external>
+            <ActionLink href={businessLicenseHref} external={isExternalHref(businessLicenseHref)}>
               Renew business license
             </ActionLink>
             <ActionLink href="/contact" variant="secondary">
@@ -55,9 +67,11 @@ export default async function BusinessPage() {
           <article className="info-card">
             <h3>Official ordinances</h3>
             <p>Keep the Municode ordinance link prominent for legal reference.</p>
-            <ActionLink href={externalLinks.ordinances} external variant="quiet">
-              Open Municode
-            </ActionLink>
+            {ordinanceLink ? (
+              <ActionLink href={ordinanceLink.href} external={isExternalHref(ordinanceLink.href)} variant="quiet">
+                Open Municode
+              </ActionLink>
+            ) : null}
           </article>
         </div>
       </section>

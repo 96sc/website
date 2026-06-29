@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ContactStrip } from "@/components/contact-strip";
 import { Icon } from "@/components/icon";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import { eventPath, newsPath } from "@/lib/cms/links";
 import type { CmsSnapshot } from "@/lib/cms/types";
 import { formatDate } from "@/lib/utils/date";
 
@@ -117,14 +118,38 @@ function createSearchIndex(snapshot: CmsSnapshot): SearchResult[] {
         ...service.documents.map((document) => document.title)
       ]
     })),
+    ...snapshot.alerts.map((alert) => ({
+      id: alert.id,
+      type: "Alert",
+      title: alert.title,
+      summary: alert.message,
+      href: alert.href ?? "/",
+      external: alert.href?.startsWith("http"),
+      keywords: [alert.title, alert.message, alert.severity, alert.updatedAt]
+    })),
+    ...snapshot.news.map((post) => ({
+      id: post.id,
+      type: "News",
+      title: post.title,
+      summary: `${formatDate(post.date)}. ${post.summary}`,
+      href: newsPath(post),
+      keywords: [post.title, post.summary, ...post.body, formatDate(post.date)]
+    })),
     ...snapshot.events.map((event) => ({
       id: event.id,
       type: "Event",
       title: event.title,
       summary: `${formatDate(event.date)} at ${event.time}. ${event.summary}`,
-      href: event.href ?? "/events",
-      external: event.href?.startsWith("http"),
-      keywords: [event.title, event.summary, event.location, event.time, formatDate(event.date)]
+      href: eventPath(event),
+      keywords: [
+        event.title,
+        event.summary,
+        event.location,
+        event.address ?? "",
+        event.time,
+        formatDate(event.date),
+        ...(event.body ?? [])
+      ]
     })),
     ...snapshot.meetings.map((meeting) => ({
       id: meeting.id,
@@ -167,6 +192,20 @@ function createSearchIndex(snapshot: CmsSnapshot): SearchResult[] {
         official.ward ?? "",
         official.email ?? "",
         ...(official.committees ?? [])
+      ]
+    })),
+    ...snapshot.staff.map((staff) => ({
+      id: staff.id,
+      type: "Staff",
+      title: staff.name,
+      summary: [staff.role, staff.department, staff.phone].filter(Boolean).join(", "),
+      href: "/contact",
+      keywords: [
+        staff.name,
+        staff.role,
+        staff.department ?? "",
+        staff.phone ?? "",
+        staff.email ?? ""
       ]
     })),
     ...snapshot.documents.map((document) => ({

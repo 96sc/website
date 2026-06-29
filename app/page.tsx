@@ -5,12 +5,22 @@ import { ContactStrip } from "@/components/contact-strip";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
 import { getCmsSnapshot } from "@/lib/cms/content";
+import { eventPath, newsPath } from "@/lib/cms/links";
 import { formatDate, shortDate } from "@/lib/utils/date";
 
 export default async function Home() {
   const snapshot = await getCmsSnapshot();
   const featuredServices = snapshot.services.filter((service) => service.featured).slice(0, 4);
-  const nextEvents = snapshot.events.slice(0, 3);
+  const nextEvents = [...snapshot.events]
+    .sort((firstEvent, secondEvent) => {
+      return new Date(firstEvent.date).getTime() - new Date(secondEvent.date).getTime();
+    })
+    .slice(0, 3);
+  const latestNews = [...snapshot.news]
+    .sort((firstPost, secondPost) => {
+      return new Date(secondPost.date).getTime() - new Date(firstPost.date).getTime();
+    })
+    .slice(0, 3);
   const activeAlerts = snapshot.alerts.filter((alert) => alert.active);
   const activeTownAlert =
     activeAlerts.find((alert) => alert.severity === "urgent") ?? activeAlerts[0];
@@ -100,16 +110,16 @@ export default async function Home() {
           <div className="home-news-heading">
             <p className="eyebrow">Recent news</p>
             <h2>Latest from town hall.</h2>
-            <Link className="news-more-link" href="/events">
-              See more
+            <Link className="news-more-link" href="/news">
+              See all news
               <Icon name="chevron-right" width={18} height={18} />
             </Link>
           </div>
-          {snapshot.alerts.map((alert) => (
-            <Link className="home-news-card" href={alert.href ?? "/services"} key={alert.id}>
-              <span>{formatDate(alert.updatedAt)}</span>
-              <h3>{alert.title}</h3>
-              <p>{alert.message}</p>
+          {latestNews.map((post) => (
+            <Link className="home-news-card" href={newsPath(post)} key={post.id}>
+              <span>{formatDate(post.date)}</span>
+              <h3>{post.title}</h3>
+              <p>{post.summary}</p>
             </Link>
           ))}
         </div>
@@ -176,48 +186,55 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="page-section home-events">
-        <SectionHeading
-          eyebrow="Events"
-          title="Upcoming events."
-          description="Find town meetings, festivals, community gatherings, and other dates to know."
-        />
-        <div className="event-grid">
-          {nextEvents.map((event) => {
-            const eventHref = event.href ?? "/events";
-            const external = eventHref.startsWith("http");
-            const [month, day] = shortDate(event.date).split(" ");
+      <section className="home-events" aria-label="Town calendar">
+        <div className="home-events-inner">
+          <div className="home-events-heading">
+            <SectionHeading
+              eyebrow="Events"
+              title="Town calendar."
+              description="Find meetings, festivals, community gatherings, and other dates to know."
+            />
+            <ActionLink href="/events" variant="secondary">
+              See all events
+            </ActionLink>
+          </div>
+          {nextEvents.length > 0 ? (
+            <div className="home-events-list">
+              {nextEvents.map((event) => {
+                const [month, day] = shortDate(event.date).split(" ");
 
-            return (
-              <Link
-                className="event-card"
-                href={eventHref}
-                key={event.id}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noreferrer" : undefined}
-              >
-                <span className="event-date-badge" aria-label={formatDate(event.date)}>
-                  <span>{month}</span>
-                  <strong>{day}</strong>
-                </span>
-                <span className="event-card-body">
-                  <span className="eyebrow">{event.time}</span>
-                  <h3>{event.title}</h3>
-                  <span>{event.summary}</span>
-                </span>
-                <span className="event-card-meta">
-                  <strong>{event.location}</strong>
-                  <span>
-                    View event
-                    <Icon name={external ? "external" : "chevron-right"} width={18} height={18} />
-                  </span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-        <div className="button-row">
-          <ActionLink href="/events">See all events</ActionLink>
+                return (
+                  <Link
+                    className="event-card"
+                    href={eventPath(event)}
+                    key={event.id}
+                  >
+                    <span className="event-date-badge" aria-label={formatDate(event.date)}>
+                      <span>{month}</span>
+                      <strong>{day}</strong>
+                    </span>
+                    <span className="event-card-body">
+                      <span className="eyebrow">{event.time}</span>
+                      <h3>{event.title}</h3>
+                      <span>{event.summary}</span>
+                    </span>
+                    <span className="event-card-meta">
+                      <strong>
+                        <Icon name="map" width={18} height={18} />
+                        {event.location}
+                      </strong>
+                      <span>
+                        View event
+                        <Icon name="chevron-right" width={18} height={18} />
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="empty-note">No upcoming events are posted right now.</p>
+          )}
         </div>
       </section>
 

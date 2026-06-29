@@ -23,6 +23,13 @@ const contactRows = [
 
 export default async function ContactPage() {
   const snapshot = await getCmsSnapshot();
+  const staffRows =
+    snapshot.staff.length > 0
+      ? snapshot.staff.map((staff) => [
+          staff.name,
+          [staff.role, staff.department, staff.phone, staff.email].filter(Boolean).join(" | ")
+        ])
+      : contactRows;
 
   return (
     <>
@@ -64,9 +71,9 @@ export default async function ContactPage() {
       </section>
 
       <section className="page-section page-section-tight">
-        <SectionHeading title="Phone directory" />
+        <SectionHeading title="Staff directory" />
         <div className="department-grid">
-          {contactRows.map(([label, phone]) => (
+          {staffRows.map(([label, phone]) => (
             <article className="department-card" key={label}>
               <h3>{label}</h3>
               <p>{phone}</p>
