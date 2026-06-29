@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ActionLink } from "@/components/action-link";
 import { ContactStrip } from "@/components/contact-strip";
+import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/section-heading";
+import { eventCalendarPath } from "@/lib/calendar";
 import { getCmsSnapshot, getEventBySlug } from "@/lib/cms/content";
 import { eventSlug, isExternalHref } from "@/lib/cms/links";
 import { buildEventsJsonLd, stringifyJsonLd } from "@/lib/structured-data";
@@ -67,6 +69,10 @@ export default async function EventPage({ params }: EventPageProps) {
           <h1>{event.title}</h1>
           <p>{event.summary}</p>
           <div className="button-row">
+            <a className="action-link action-link-primary" href={eventCalendarPath(event)}>
+              <Icon name="calendar" width={18} height={18} />
+              <span>Add to calendar</span>
+            </a>
             <ActionLink href="/events" variant="secondary">
               All events
             </ActionLink>
